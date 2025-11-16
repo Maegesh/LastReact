@@ -1136,6 +1136,62 @@
         }
       }
     },
+    "/api/BloodRequest/{id}/donor-response": {
+      "post": {
+        "tags": [
+          "BloodRequest"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": { }
+            },
+            "application/json": {
+              "schema": { }
+            },
+            "text/json": {
+              "schema": { }
+            },
+            "application/*+json": {
+              "schema": { }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BloodRequestResponseDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BloodRequestResponseDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BloodRequestResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BloodStock": {
       "get": {
         "tags": [
@@ -2917,6 +2973,11 @@
             "maxLength": 200,
             "minLength": 0,
             "type": "string",
+            "nullable": true
+          },
+          "bloodRequestId": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },

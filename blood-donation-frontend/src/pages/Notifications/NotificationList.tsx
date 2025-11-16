@@ -80,11 +80,7 @@ export default function NotificationList() {
         {isAdmin ? 'Notifications Management' : 'My Notifications'}
       </Typography>
       
-      {!isAdmin && (
-        <Typography variant="body2" sx={{ mb: 2, color: '#666', p: 1, bgcolor: '#fff3e0', borderRadius: 1 }}>
-          Debug: Querying notifications for User ID: {currentUser.id} | Username: {currentUser.username}
-        </Typography>
-      )}
+
 
       <TableContainer component={Paper}>
         <Table>

@@ -7,5 +7,7 @@ export const bloodRequestAPI = {
   getByRecipientId: (recipientId: number) => http.get(`/BloodRequest/recipient/${recipientId}`),
   create: (data: any) => http.post("/BloodRequest", data),
   update: (id: number, data: any) => http.put(`/BloodRequest/${id}`, data),
-  delete: (id: number) => http.delete(`/BloodRequest/${id}`)
+  delete: (id: number) => http.delete(`/BloodRequest/${id}`),
+  donorResponse: (id: number, response: 'accept' | 'decline', donorId: number) => 
+    http.post(`/BloodRequest/${id}/donor-response`, { response, donorId })
 };

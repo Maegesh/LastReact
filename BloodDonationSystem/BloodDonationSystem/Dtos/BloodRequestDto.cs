@@ -43,4 +43,14 @@ namespace BloodDonationSystem.Dtos
         [Required(ErrorMessage = "Donor ID is required")]
         public int DonorId { get; set; }
     }
+
+    public class DonorResponseDto
+    {
+        [Required(ErrorMessage = "Donor ID is required")]
+        public int DonorId { get; set; }
+
+        [Required(ErrorMessage = "Response is required")]
+        [RegularExpression("^(accept|decline)$", ErrorMessage = "Response must be 'accept' or 'decline'")]
+        public string Response { get; set; } = null!;
+    }
 }

@@ -9,15 +9,16 @@ import {
   Bloodtype, CalendarToday, History, Inventory, Business, Person, Notifications,
   Logout, TrendingUp, Edit, PhotoCamera
 } from '@mui/icons-material';
-import { donorAPI } from '../api/donor.api';
-import { bloodRequestAPI } from '../api/bloodRequest.api';
-import { appointmentAPI } from '../api/appointment.api';
-import { donationAPI } from '../api/donation.api';
-import { bloodBankAPI } from '../api/bloodBank.api';
-import { tokenstore } from '../auth/tokenstore';
-import Loader from "../components/Loader.tsx";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { donorAPI } from '../../api/donor.api';
+import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { appointmentAPI } from '../../api/appointment.api';
+import { donationAPI } from '../../api/donation.api';
+import { bloodBankAPI } from '../../api/bloodBank.api';
+import { tokenstore } from '../../auth/tokenstore';
+import Loader from "../../components/Loader.tsx";
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { toast } from 'react-toastify';
 
 export default function DonorDashboard() {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ export default function DonorDashboard() {
           });
         } catch (error) {
           console.error('Error loading donor profile:', error);
+          toast.error('Failed to load dashboard data');
           setCounts({ pendingRequests: 0, appointments: 0, donations: 0, bloodBanks: 0 });
         }
       }
@@ -109,6 +111,7 @@ export default function DonorDashboard() {
   const handleLogout = () => {
     tokenstore.clear();
     localStorage.removeItem('user');
+    toast.info('Logged out successfully');
     navigate('/login');
   };
 
@@ -131,11 +134,13 @@ export default function DonorDashboard() {
         };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         
+        toast.success('Profile updated successfully');
         setProfileDialog(false);
         window.location.reload();
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      toast.error('Failed to update profile');
     }
   };
 
@@ -182,14 +187,15 @@ export default function DonorDashboard() {
             profileImageUrl: updatedUser.profileImageUrl ? `http://localhost:5082${updatedUser.profileImageUrl}` : ''
           }));
           
+          toast.success('Profile image updated successfully');
           // Refresh the page to show the new image
           window.location.reload();
         } else {
           const errorText = await response.text();
-          alert('Upload failed: ' + errorText);
+          toast.error('Upload failed: ' + errorText);
         }
       } catch (error: any) {
-        alert('Error uploading image: ' + error.message);
+        toast.error('Error uploading image: ' + error.message);
       } finally {
         setLoading(false);
       }

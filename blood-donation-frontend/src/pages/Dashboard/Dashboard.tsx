@@ -7,10 +7,10 @@ import {
   TrendingUp, TrendingDown, People, Bloodtype, Business, 
   CalendarToday, Notifications, CheckCircle, Warning, Error
 } from '@mui/icons-material';
-import { bloodRequestAPI } from '../api/bloodRequest.api';
-import { appointmentAPI } from '../api/appointment.api';
-import { donationAPI } from '../api/donation.api';
-import { notificationAPI } from '../api/notification.api';
+import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { appointmentAPI } from '../../api/appointment.api';
+import { donationAPI } from '../../api/donation.api';
+import { notificationAPI } from '../../api/notification.api';
 
 interface DashboardProps {
   bloodBanksCount: number;

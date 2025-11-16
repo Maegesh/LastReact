@@ -16,6 +16,8 @@ namespace BloodDonationSystem.Dtos
 
         [StringLength(200, ErrorMessage = "Remarks cannot exceed 200 characters")]
         public string? Remarks { get; set; }
+        
+        public int? BloodRequestId { get; set; }
     }
 
     public class AppointmentUpdateDto

@@ -8,14 +8,15 @@ import {
 import {
   Bloodtype, Add, Notifications, Person, Logout, TrendingUp, Edit, PhotoCamera
 } from '@mui/icons-material';
-import Loader from '../components/Loader';
-import RecipientBloodRequestList from './BloodRequests/RecipientBloodRequestList';
-import CreateBloodRequest from './BloodRequests/CreateBloodRequest';
-import { bloodRequestAPI } from '../api/bloodRequest.api';
-import { recipientAPI } from '../api/recipient.api';
-import { tokenstore } from '../auth/tokenstore';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Loader from '../../components/Loader';
+import RecipientBloodRequestList from '../BloodRequests/RecipientBloodRequestList';
+import CreateBloodRequest from '../BloodRequests/CreateBloodRequest';
+import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { recipientAPI } from '../../api/recipient.api';
+import { tokenstore } from '../../auth/tokenstore';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { toast } from 'react-toastify';
 
 export default function RecipientDashboard() {
   const navigate = useNavigate();
@@ -41,7 +42,10 @@ export default function RecipientDashboard() {
   }, []);
 
   const loadData = async () => {
+    if ((window as any).recipientDashboardLoading) return;
+    
     try {
+      (window as any).recipientDashboardLoading = true;
       setLoading(true);
       
       if (userId) {
@@ -86,6 +90,7 @@ export default function RecipientDashboard() {
           });
         } catch (error) {
           console.error('Error loading recipient profile:', error);
+          toast.error('Failed to load dashboard data');
           setStats({ totalRequests: 0, pendingRequests: 0, completedRequests: 0 });
         }
       }
@@ -93,12 +98,14 @@ export default function RecipientDashboard() {
       console.error('Error loading data:', error);
     } finally {
       setLoading(false);
+      (window as any).recipientDashboardLoading = false;
     }
   };
 
   const handleLogout = () => {
     tokenstore.clear();
     localStorage.removeItem('user');
+    toast.info('Logged out successfully');
     navigate('/login');
   };
 
@@ -140,16 +147,18 @@ export default function RecipientDashboard() {
           const updatedUser = await userResponse.json();
           localStorage.setItem('user', JSON.stringify(updatedUser));
           
+          toast.success('Profile updated successfully');
           setProfileDialog(false);
           window.location.reload();
         } else {
           const errorText = await userResponse.text();
           console.error('Failed to update user profile:', userResponse.status, errorText);
-          alert('Failed to update profile: ' + errorText);
+          toast.error('Failed to update profile: ' + errorText);
         }
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      toast.error('Failed to update profile');
     }
   };
 
@@ -206,16 +215,17 @@ export default function RecipientDashboard() {
             profileImageUrl: updatedUser.profileImageUrl ? `http://localhost:5082${updatedUser.profileImageUrl}` : ''
           }));
           
+          toast.success('Profile image updated successfully');
           // Refresh the page to show the new image
           window.location.reload();
         } else {
           const errorText = await response.text();
           console.error('Upload failed:', response.status, errorText);
-          alert('Upload failed: ' + errorText);
+          toast.error('Upload failed: ' + errorText);
         }
       } catch (error: any) {
         console.error('Error uploading image:', error);
-        alert('Error uploading image: ' + error.message);
+        toast.error('Error uploading image: ' + error.message);
       } finally {
         setLoading(false);
       }
@@ -243,6 +253,14 @@ export default function RecipientDashboard() {
       change: `${stats.pendingRequests} pending`
     },
     { 
+      title: 'Blood Banks', 
+      icon: <Notifications />, 
+      path: '/recipient/blood-banks',
+      color: '#10b981',
+      bgColor: '#f0fdf4',
+      change: 'View all'
+    },
+    { 
       title: 'Notifications', 
       icon: <Notifications />, 
       path: '/recipient/notifications',
@@ -268,6 +286,9 @@ export default function RecipientDashboard() {
       <Container maxWidth={false} sx={{ flex: 1, py: 4, px: 3 }}>
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 1 }}>
+            Recipient Dashboard - {currentUser.firstName || 'Recipient'}
+          </Typography>
+          <Typography variant="h5" sx={{ fontWeight: 'normal', color: '#64748b', mb: 2 }}>
             Welcome Back, {currentUser.firstName || 'Recipient'}!
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>

@@ -1,34 +1,22 @@
 import { useState, useEffect } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Chip, IconButton, Button, Dialog,
-  DialogTitle, DialogContent, DialogActions, TextField, Grid,
-  FormControl, InputLabel, Select, MenuItem
+  TableHead, TableRow, Paper, Chip, IconButton, Button
 } from '@mui/material';
-import { Edit, Delete, Visibility } from '@mui/icons-material';
+import { Delete, Visibility } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { recipientAPI } from '../../api/recipient.api';
 import type { BloodRequest } from '../../types/BloodRequest';
 import Loader from '../../components/Loader';
+import { toast } from 'react-toastify';
 
 export default function RecipientBloodRequestList() {
   const [requests, setRequests] = useState<BloodRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editDialog, setEditDialog] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<BloodRequest | null>(null);
-  const [editForm, setEditForm] = useState({
-    bloodGroupNeeded: '',
-    quantity: 1,
-    urgencyLevel: 'Medium',
-    hospitalName: '',
-    doctorName: '',
-    contactNumber: '',
-    medicalReason: ''
-  });
+
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-  const urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
+
 
   useEffect(() => {
     loadRequests();
@@ -55,32 +43,7 @@ export default function RecipientBloodRequestList() {
     }
   };
 
-  const handleEdit = (request: BloodRequest) => {
-    setSelectedRequest(request);
-    setEditForm({
-      bloodGroupNeeded: request.bloodGroupNeeded,
-      quantity: request.quantity,
-      urgencyLevel: request.urgencyLevel || 'Medium',
-      hospitalName: request.hospitalName || '',
-      doctorName: request.doctorName || '',
-      contactNumber: request.contactNumber || '',
-      medicalReason: request.medicalReason || ''
-    });
-    setEditDialog(true);
-  };
 
-  const handleUpdate = async () => {
-    if (!selectedRequest) return;
-
-    try {
-      await bloodRequestAPI.update(selectedRequest.id, editForm);
-      setEditDialog(false);
-      loadRequests();
-    } catch (error) {
-      console.error('Error updating request:', error);
-      alert('Failed to update request');
-    }
-  };
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this request?')) return;
@@ -90,20 +53,18 @@ export default function RecipientBloodRequestList() {
       loadRequests();
     } catch (error) {
       console.error('Error deleting request:', error);
-      alert('Failed to delete request');
+      toast.error('Failed to delete request');
     }
   };
 
   const handleMarkFulfilled = async (id: number) => {
-    if (!confirm('Are you sure you have received the blood and want to mark this request as fulfilled?')) return;
-
     try {
       await bloodRequestAPI.update(id, { status: 'Fulfilled' });
       loadRequests();
-      alert('Request marked as fulfilled successfully!');
+      toast.success('Request marked as fulfilled successfully!');
     } catch (error) {
       console.error('Error marking request as fulfilled:', error);
-      alert('Failed to mark request as fulfilled');
+      toast.error('Failed to mark request as fulfilled');
     }
   };
 
@@ -184,13 +145,7 @@ export default function RecipientBloodRequestList() {
                     {new Date(request.requestDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
-                    <IconButton 
-                      color="primary" 
-                      onClick={() => handleEdit(request)}
-                      disabled={request.status === 'Fulfilled' || request.status === 'Cancelled'}
-                    >
-                      <Edit />
-                    </IconButton>
+
                     <IconButton 
                       color="error" 
                       onClick={() => handleDelete(request.id)}
@@ -217,91 +172,6 @@ export default function RecipientBloodRequestList() {
         </Table>
       </TableContainer>
 
-      {/* Edit Dialog */}
-      <Dialog open={editDialog} onClose={() => setEditDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Blood Request</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-              <FormControl fullWidth required>
-                <InputLabel>Blood Group Needed</InputLabel>
-                <Select
-                  value={editForm.bloodGroupNeeded}
-                  onChange={(e) => setEditForm({...editForm, bloodGroupNeeded: e.target.value})}
-                  label="Blood Group Needed"
-                >
-                  {bloodGroups.map(group => (
-                    <MenuItem key={group} value={group}>{group}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <TextField
-                label="Quantity (Units)"
-                type="number"
-                value={editForm.quantity}
-                onChange={(e) => setEditForm({...editForm, quantity: parseInt(e.target.value)})}
-                required
-                fullWidth
-                inputProps={{ min: 1, max: 10 }}
-              />
-            </Box>
-
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-              <FormControl fullWidth required>
-                <InputLabel>Urgency Level</InputLabel>
-                <Select
-                  value={editForm.urgencyLevel}
-                  onChange={(e) => setEditForm({...editForm, urgencyLevel: e.target.value})}
-                  label="Urgency Level"
-                >
-                  {urgencyLevels.map(level => (
-                    <MenuItem key={level} value={level}>{level}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-
-            </Box>
-
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-              <TextField
-                label="Hospital Name"
-                value={editForm.hospitalName}
-                onChange={(e) => setEditForm({...editForm, hospitalName: e.target.value})}
-                fullWidth
-              />
-
-              <TextField
-                label="Doctor Name"
-                value={editForm.doctorName}
-                onChange={(e) => setEditForm({...editForm, doctorName: e.target.value})}
-                fullWidth
-              />
-            </Box>
-
-            <TextField
-              label="Contact Number"
-              value={editForm.contactNumber}
-              onChange={(e) => setEditForm({...editForm, contactNumber: e.target.value})}
-              fullWidth
-            />
-
-            <TextField
-              label="Medical Reason"
-              value={editForm.medicalReason}
-              onChange={(e) => setEditForm({...editForm, medicalReason: e.target.value})}
-              fullWidth
-              multiline
-              rows={3}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditDialog(false)}>Cancel</Button>
-          <Button onClick={handleUpdate} variant="contained">Update Request</Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

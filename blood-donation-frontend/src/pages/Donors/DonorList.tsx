@@ -30,7 +30,10 @@ export default function DonorList() {
   }, []);
 
   const loadDonors = async () => {
+    if ((window as any).donorsLoading) return;
+    
     try {
+      (window as any).donorsLoading = true;
       setLoading(true);
       const response = await donorAPI.getAll();
       const donorProfiles = response.data || [];
@@ -53,6 +56,7 @@ export default function DonorList() {
       console.error('Error loading donors:', error);
     } finally {
       setLoading(false);
+      (window as any).donorsLoading = false;
     }
   };
 

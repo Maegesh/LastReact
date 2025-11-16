@@ -3,6 +3,7 @@ export interface BloodRequest {
   recipientId: number;
   recipientName?: string;
   hospitalName?: string;
+  bloodBankName?: string;
   bloodGroupNeeded: string;
   quantity: number;
   requestDate: string;

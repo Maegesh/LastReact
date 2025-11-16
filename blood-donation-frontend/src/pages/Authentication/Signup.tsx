@@ -9,7 +9,8 @@ import {
   PersonAdd, Bloodtype, Favorite, VolunteerActivism, 
   LocalHospital, Security, CheckCircle, ArrowBack
 } from '@mui/icons-material';
-import { authAPI } from '../api/auth.api';
+import { authAPI } from '../../api/auth.api';
+import { toast } from 'react-toastify';
 
 interface DonorSignupData {
   firstName: string;
@@ -136,10 +137,13 @@ export default function Signup() {
     setLoading(true);
     try {
       await authAPI.signupDonor(donorData);
+      toast.success('Registration successful! Redirecting to login...');
       setSuccess('Donor registration successful! Please login to continue.');
       setTimeout(() => navigate('/login'), 2000);
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Registration failed');
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -158,10 +162,13 @@ export default function Signup() {
     setLoading(true);
     try {
       await authAPI.signupRecipient(recipientData);
+      toast.success('Registration successful! Redirecting to login...');
       setSuccess('Recipient registration successful! Please login to continue.');
       setTimeout(() => navigate('/login'), 2000);
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Registration failed');
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

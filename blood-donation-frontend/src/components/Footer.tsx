@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Box, Container, Typography, Grid, Link, Divider, IconButton
+  Box, Container, Typography, Link, Divider, IconButton
 } from '@mui/material';
 import {
   Bloodtype, Phone, Email, LocationOn, Facebook, Twitter, Instagram, LinkedIn
@@ -16,9 +16,9 @@ export default function Footer() {
       pb: 2
     }}>
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {/* Brand Section */}
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: '1 1 300px', minWidth: 300 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <Box sx={{
                 width: 32,
@@ -55,10 +55,10 @@ export default function Footer() {
                 <LinkedIn />
               </IconButton>
             </Box>
-          </Grid>
+          </Box>
 
           {/* Quick Links */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Box sx={{ flex: '1 1 150px', minWidth: 150 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
               Quick Links
             </Typography>
@@ -76,10 +76,10 @@ export default function Footer() {
                 Success Stories
               </Link>
             </Box>
-          </Grid>
+          </Box>
 
           {/* Support */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Box sx={{ flex: '1 1 150px', minWidth: 150 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
               Support
             </Typography>
@@ -97,10 +97,10 @@ export default function Footer() {
                 Privacy Policy
               </Link>
             </Box>
-          </Grid>
+          </Box>
 
           {/* Contact Info */}
-          <Grid item xs={12} md={4}>
+          <Box sx={{ flex: '1 1 300px', minWidth: 300 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
               Contact Information
             </Typography>
@@ -139,8 +139,8 @@ export default function Footer() {
                 For urgent blood requirements, call our emergency hotline available round the clock.
               </Typography>
             </Box>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Divider sx={{ my: 3, borderColor: '#475569' }} />
 

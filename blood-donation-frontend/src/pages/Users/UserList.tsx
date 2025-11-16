@@ -7,6 +7,7 @@ import { Delete } from '@mui/icons-material';
 import { userAPI } from '../../api/user.api';
 import type { User } from '../../types/User';
 import Loader from '../../components/Loader';
+import { toast } from 'react-toastify';
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
@@ -36,7 +37,7 @@ export default function UserList() {
       loadUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
-      alert('Failed to delete user');
+      toast.error('Failed to delete user');
     }
   };
 

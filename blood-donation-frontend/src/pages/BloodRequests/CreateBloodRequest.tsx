@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Typography, Card, CardContent, TextField, Button,
   FormControl, InputLabel, Select, MenuItem, Alert, Grid
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { bloodBankAPI } from '../../api/bloodBank.api';
+import { notificationAPI } from '../../api/notification.api';
+import { recipientAPI } from '../../api/recipient.api';
+import type { BloodBank } from '../../types/BloodBank';
 
 interface CreateBloodRequestProps {
   onRequestCreated?: () => void;
@@ -15,7 +19,6 @@ interface BloodRequestData {
   quantity: number;
   urgencyLevel: string;
   hospitalName: string;
-  contactNumber: string;
   medicalReason: string;
 }
 
@@ -23,14 +26,67 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
   const [formData, setFormData] = useState<BloodRequestData>({
     bloodGroupNeeded: '',
     quantity: 1,
     urgencyLevel: 'Medium',
     hospitalName: '',
-    contactNumber: '',
     medicalReason: ''
   });
+
+  useEffect(() => {
+    loadBloodBanks();
+    loadRecipientProfile();
+  }, []);
+
+  const loadRecipientProfile = async () => {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const response = await recipientAPI.getByUserId(currentUser.id);
+      const profile = response.data || response;
+      
+      if (profile) {
+        setFormData(prev => ({ 
+          ...prev, 
+          hospitalName: profile.hospitalName || ''
+        }));
+      }
+    } catch (error) {
+      console.error('Error loading recipient profile:', error);
+    }
+  };
+
+  const loadBloodBanks = async () => {
+    try {
+      const token = localStorage.getItem('auth-token');
+      if (!token) {
+        console.log('No auth token found, using fallback blood banks');
+        setBloodBanks([
+          { id: 1, name: 'City General Hospital Blood Bank', location: 'Downtown', contactNumber: '123-456-7890', email: 'blood@citygeneral.com', capacity: 500 },
+          { id: 2, name: 'Regional Medical Center', location: 'Uptown', contactNumber: '098-765-4321', email: 'blood@regional.com', capacity: 300 },
+          { id: 3, name: 'Community Health Blood Bank', location: 'Suburbs', contactNumber: '555-123-4567', email: 'blood@community.com', capacity: 200 }
+        ]);
+        return;
+      }
+      
+      const response = await bloodBankAPI.getAll();
+      const banks = response.data || response || [];
+      setBloodBanks(Array.isArray(banks) ? banks : []);
+    } catch (error: any) {
+      console.error('Error loading blood banks:', error);
+      if (error.response?.status === 403) {
+        // Use fallback data when authorization fails
+        setBloodBanks([
+          { id: 1, name: 'City General Hospital Blood Bank', location: 'Downtown', contactNumber: '123-456-7890', email: 'blood@citygeneral.com', capacity: 500 },
+          { id: 2, name: 'Regional Medical Center', location: 'Uptown', contactNumber: '098-765-4321', email: 'blood@regional.com', capacity: 300 },
+          { id: 3, name: 'Community Health Blood Bank', location: 'Suburbs', contactNumber: '555-123-4567', email: 'blood@community.com', capacity: 200 }
+        ]);
+      } else {
+        setError('Failed to load blood banks. Using default options.');
+      }
+    }
+  };
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
@@ -51,13 +107,25 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
         quantity: formData.quantity,
         urgencyLevel: formData.urgencyLevel,
         hospitalName: formData.hospitalName,
-        contactNumber: formData.contactNumber,
         medicalReason: formData.medicalReason
       };
       console.log('Request data:', requestData);
 
       await bloodRequestAPI.create(requestData);
-      setSuccess('Blood request created successfully! Donors will be notified.');
+      
+      // Create notification for recipient
+      try {
+        await notificationAPI.create({
+          userId: currentUser.id,
+          message: `Your blood request for ${formData.bloodGroupNeeded} (${formData.quantity} units) is under progress. Donors are being notified.`,
+          type: 'BloodRequest',
+          isRead: false
+        });
+      } catch (notificationError) {
+        console.error('Error creating notification:', notificationError);
+      }
+      
+      setSuccess('Blood request created successfully! Your blood is under progress. Donors will be notified and you will receive updates.');
       
       // Reset form
       setFormData({
@@ -65,7 +133,6 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
         quantity: 1,
         urgencyLevel: 'Medium',
         hospitalName: '',
-        contactNumber: '',
         medicalReason: ''
       });
       
@@ -147,14 +214,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
                 onChange={(e) => handleInputChange('hospitalName', e.target.value)}
                 required
                 fullWidth
-              />
-
-              <TextField
-                label="Contact Number"
-                value={formData.contactNumber}
-                onChange={(e) => handleInputChange('contactNumber', e.target.value)}
-                required
-                fullWidth
+                placeholder="Enter hospital name"
               />
 
               <TextField

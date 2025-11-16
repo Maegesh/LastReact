@@ -508,6 +508,37 @@
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
+    "Method": "DonorResponse",
+    "RelativePath": "api/BloodRequest/{id}/donor-response",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "responseData",
+        "Type": "System.Object",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.BloodRequestResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
     "Method": "FulfillBloodRequest",
     "RelativePath": "api/BloodRequest/{id}/fulfill",
     "HttpMethod": "POST",

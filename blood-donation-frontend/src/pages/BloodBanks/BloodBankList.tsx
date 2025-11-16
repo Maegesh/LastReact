@@ -8,6 +8,7 @@ import { bloodBankAPI } from '../../api/bloodBank.api';
 import type { BloodBank } from '../../types/BloodBank';
 import Loader from '../../components/Loader';
 import AddBloodBankDialog from '../../components/AddBloodBankDialog';
+import { toast } from 'react-toastify';
 
 interface BloodBankListProps {
   showActions?: boolean;
@@ -42,7 +43,7 @@ export default function BloodBankList({ showActions = false }: BloodBankListProp
       loadBloodBanks();
     } catch (error) {
       console.error('Error deleting blood bank:', error);
-      alert('Failed to delete blood bank');
+      toast.error('Failed to delete blood bank');
     }
   };
 

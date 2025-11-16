@@ -1,8 +1,8 @@
 using BloodBankSystem.Models;
 using BloodDonationSystem.Dtos;
-using BloodDonationSystem.Interfaces;
 using BloodBankSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using BloodDonationSystem.Interfaces;
 
 namespace BloodDonationSystem.Services
 {
@@ -80,22 +80,20 @@ namespace BloodDonationSystem.Services
                 };
                 _context.NotificationLogs.Add(donorNotification);
 
-                // Only notify recipients who need this specific blood type
-                var recipientsNeedingBlood = await _context.RecipientProfiles
-                    .Include(r => r.User)
-                    .Where(r => r.RequiredBloodGroup == donor.BloodGroup)
-                    .ToListAsync();
-                
-                Console.WriteLine($"Found {recipientsNeedingBlood.Count} recipients needing {donor.BloodGroup} blood type");
-
-                foreach (var recipient in recipientsNeedingBlood)
+                // Only notify the specific recipient who made the blood request (if bloodRequestId is provided)
+                if (appointmentDto.BloodRequestId.HasValue)
                 {
-                    if (recipient.User != null)
+                    var bloodRequest = await _context.BloodRequests
+                        .Include(br => br.Recipient)
+                        .ThenInclude(r => r.User)
+                        .FirstOrDefaultAsync(br => br.Id == appointmentDto.BloodRequestId.Value);
+                    
+                    if (bloodRequest?.Recipient?.User != null)
                     {
-                        Console.WriteLine($"Creating notification for recipient UserId: {recipient.UserId} ({recipient.User.Username})");
+                        Console.WriteLine($"Creating notification for specific recipient UserId: {bloodRequest.Recipient.UserId} ({bloodRequest.Recipient.User.Username})");
                         var recipientNotification = new NotificationLog
                         {
-                            UserId = recipient.UserId,
+                            UserId = bloodRequest.Recipient.UserId,
                             Message = $"Good news! {donor.BloodGroup} blood donation appointment scheduled at {bloodBank.Name} on {appointmentDto.AppointmentDate:MMM dd, yyyy 'at' hh:mm tt}. This matches your required blood type."
                         };
                         _context.NotificationLogs.Add(recipientNotification);

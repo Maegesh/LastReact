@@ -7,25 +7,26 @@ import {
   Inventory, Notifications, Person, PersonAdd, Business,
   Logout, Settings
 } from '@mui/icons-material';
-import { bloodBankAPI } from '../api/bloodBank.api';
-import { bloodRequestAPI } from '../api/bloodRequest.api';
-import { userAPI } from '../api/user.api';
-import { donorAPI } from '../api/donor.api';
+import { bloodBankAPI } from '../../api/bloodBank.api';
+import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { userAPI } from '../../api/user.api';
+import { donorAPI } from '../../api/donor.api';
 import { useNavigate } from 'react-router-dom';
-import { tokenstore } from '../auth/tokenstore';
+import { tokenstore } from '../../auth/tokenstore';
+import { toast } from 'react-toastify';
 
 // Import components
-import Loader from "../components/Loader.tsx";
+import Loader from "../../components/Loader.tsx";
 import DashboardComponent from './Dashboard.tsx';
-import BloodBankList from './BloodBanks/BloodBankList.tsx';
-import BloodRequestList from './BloodRequests/BloodRequestList.tsx';
-import UserList from './Users/UserList.tsx';
-import DonorList from './Donors/DonorList.tsx';
-import RecipientList from './Recipients/RecipientList.tsx';
-import DonationList from './Donations/DonationList.tsx';
-import AppointmentList from './Appointments/AppointmentList.tsx';
-import BloodStockList from './BloodStock/BloodStockList.tsx';
-import NotificationList from './Notifications/NotificationList.tsx';
+import BloodBankList from '../BloodBanks/BloodBankList.tsx';
+import BloodRequestList from '../BloodRequests/BloodRequestList.tsx';
+import UserList from '../Users/UserList.tsx';
+import DonorList from '../Donors/DonorList.tsx';
+import RecipientList from '../Recipients/RecipientList.tsx';
+import DonationList from '../Donations/DonationList.tsx';
+import AppointmentList from '../Appointments/AppointmentList.tsx';
+import BloodStockList from '../BloodStock/BloodStockList.tsx';
+import NotificationList from '../Notifications/NotificationList.tsx';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState(0);
@@ -40,8 +41,12 @@ export default function AdminDashboard() {
   }, []);
 
   const loadData = async () => {
+    if ((window as any).adminDashboardLoading) return;
+    
     try {
+      (window as any).adminDashboardLoading = true;
       setLoading(true);
+      
       const [banksRes, requestsRes, usersRes, donorsRes] = await Promise.all([
         bloodBankAPI.getAll().catch(() => ({ data: [] })),
         bloodRequestAPI.getAll().catch(() => ({ data: [] })),
@@ -56,16 +61,21 @@ export default function AdminDashboard() {
         donors: (donorsRes.data || []).length
       });
     } catch (error) {
-      console.error("Error loading data:", error);
+      console.error('Error loading data:', error);
+      toast.error('Failed to load dashboard data');
       setCounts({ bloodBanks: 0, bloodRequests: 0, users: 0, donors: 0 });
     } finally {
       setLoading(false);
+      (window as any).adminDashboardLoading = false;
     }
   };
+
+
 
   const handleLogout = () => {
     tokenstore.clear();
     localStorage.removeItem('user');
+    toast.info('Logged out successfully');
     navigate('/login');
   };
 

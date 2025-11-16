@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
-import { getToken } from "../api/auth.api";
-import { tokenstore } from "../auth/tokenstore";
+import { getToken } from "../../api/auth.api";
+import { tokenstore } from "../../auth/tokenstore";
+import { toast } from 'react-toastify';
 import { useNavigate, Link } from "react-router-dom";
 import {
   Box, Typography, TextField, Button, Alert, Card, CardContent
@@ -48,7 +49,9 @@ export default function Login() {
       tokenstore.setRole(user?.role?.toString() ?? null);
       localStorage.setItem('user', JSON.stringify(user));
 
-      // Handle numeric roles: 0=Admin, 1=Donor, 2=Recipient
+      toast.success(`Welcome back, ${user.firstName || 'User'}!`);
+
+      
       if (user.role === 0) {
         nav("/admin", { replace: true });
       } else if (user?.role === 1) {
@@ -57,6 +60,7 @@ export default function Login() {
         nav("/recipient", { replace: true });
       }
     } catch (error) {
+      toast.error("Invalid email or password. Please try again.");
       setError("Invalid email or password. Please try again.");
       console.error("Login error:", error);
     } finally {

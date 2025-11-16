@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { donorAPI } from '../../api/donor.api';
 import type { DonorProfile as DonorProfileType, UpdateDonorProfile } from '../../types/DonorProfile';
 import Loader from '../../components/Loader';
+import { toast } from 'react-toastify';
 
 const getBloodGroupColor = (bloodGroup: string) => {
   const colors: any = {
@@ -84,7 +85,7 @@ export default function DonorProfile() {
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile: ' + error);
+      toast.error('Failed to update profile: ' + error);
     }
   };
 
@@ -126,11 +127,11 @@ export default function DonorProfile() {
       } else {
         const errorText = await response.text();
         console.error('Upload failed:', response.status, errorText);
-        alert('Upload failed: ' + errorText);
+        toast.error('Upload failed: ' + errorText);
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Error uploading image: ' + error);
+      toast.error('Error uploading image: ' + error);
     } finally {
       setUploading(false);
     }

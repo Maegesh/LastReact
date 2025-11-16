@@ -1,8 +1,8 @@
 using BloodBankSystem.Models;
 using BloodDonationSystem.Dtos;
-using BloodDonationSystem.Interfaces;
 using BloodBankSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using BloodDonationSystem.Interfaces;
 
 namespace BloodDonationSystem.Services
 {
@@ -142,11 +142,8 @@ namespace BloodDonationSystem.Services
             // Notify recipient about status change
             await NotifyRecipientStatusChange(updated, requestDto.Status);
             
-            // Create donation records when request is fulfilled
-            if (requestDto.Status?.ToLower() == "fulfilled")
-            {
-                await CreateDonationRecordsForFulfilledRequest(updated);
-            }
+            // Don't automatically create donation records when recipient marks as fulfilled
+            // Donation records should only be created through admin fulfill action or appointment system
             
             return MapToResponseDto(updated);
         }
@@ -356,6 +353,62 @@ namespace BloodDonationSystem.Services
         {
             var deleted = await _bloodRequestRepo.DeleteBloodRequest(id);
             return MapToResponseDto(deleted);
+        }
+
+        public async Task<BloodRequestResponseDto> DonorResponse(int requestId, int donorId, string response)
+        {
+            var request = await _context.BloodRequests
+                .Include(br => br.Recipient).ThenInclude(r => r.User)
+                .FirstOrDefaultAsync(br => br.Id == requestId);
+            
+            if (request == null)
+                throw new KeyNotFoundException($"Blood Request with Id {requestId} not found");
+            
+            var donor = await _context.DonorProfiles
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.Id == donorId);
+            
+            if (donor == null)
+                throw new KeyNotFoundException($"Donor with Id {donorId} not found");
+            
+            // Update request status based on donor response
+            if (response.ToLower() == "accept")
+            {
+                request.Status = "Approved";
+                
+                // Notify admin about donor acceptance
+                var admins = await _context.Users.Where(u => u.Role == UserRole.Admin).ToListAsync();
+                foreach (var admin in admins)
+                {
+                    var adminNotification = new NotificationLog
+                    {
+                        UserId = admin.Id,
+                        Message = $"Donor {donor.User.FirstName} {donor.User.LastName} accepted blood request #{requestId} for {request.BloodGroupNeeded} ({request.Quantity} units)."
+                    };
+                    _context.NotificationLogs.Add(adminNotification);
+                }
+                
+                // Notify recipient about acceptance
+                var recipientNotification = new NotificationLog
+                {
+                    UserId = request.Recipient.UserId,
+                    Message = $"Good news! A donor has accepted your blood request for {request.BloodGroupNeeded} ({request.Quantity} units)."
+                };
+                _context.NotificationLogs.Add(recipientNotification);
+            }
+            else
+            {
+                // For decline, just log it (don't change request status as other donors might accept)
+                var adminNotification = new NotificationLog
+                {
+                    UserId = (await _context.Users.FirstAsync(u => u.Role == UserRole.Admin)).Id,
+                    Message = $"Donor {donor.User.FirstName} {donor.User.LastName} declined blood request #{requestId} for {request.BloodGroupNeeded} ({request.Quantity} units)."
+                };
+                _context.NotificationLogs.Add(adminNotification);
+            }
+            
+            await _context.SaveChangesAsync();
+            return MapToResponseDto(request);
         }
 
         public async Task<BloodRequestResponseDto> FulfillBloodRequest(int requestId, int donorId)
