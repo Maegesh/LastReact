@@ -6,9 +6,11 @@ import {
 import { Delete, Visibility } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { recipientAPI } from '../../api/recipient.api';
+import { notificationAPI } from '../../api/notification.api';
 import type { BloodRequest } from '../../types/BloodRequest';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
+import '../../styles/common.css';
 
 export default function RecipientBloodRequestList() {
   const [requests, setRequests] = useState<BloodRequest[]>([]);
@@ -23,7 +25,9 @@ export default function RecipientBloodRequestList() {
   }, []);
 
   const loadRequests = async () => {
+    if ((window as any).recipientRequestsLoading) return;
     try {
+      (window as any).recipientRequestsLoading = true;
       setLoading(true);
       // First get the recipient profile to get the correct recipient ID
       const profileResponse = await recipientAPI.getByUserId(currentUser.id);
@@ -36,10 +40,10 @@ export default function RecipientBloodRequestList() {
         setRequests([]);
       }
     } catch (error) {
-      console.error('Error loading requests:', error);
       setRequests([]);
     } finally {
       setLoading(false);
+      (window as any).recipientRequestsLoading = false;
     }
   };
 
@@ -52,19 +56,30 @@ export default function RecipientBloodRequestList() {
       await bloodRequestAPI.delete(id);
       loadRequests();
     } catch (error) {
-      console.error('Error deleting request:', error);
       toast.error('Failed to delete request');
     }
   };
 
-  const handleMarkFulfilled = async (id: number) => {
+  const handleMarkCompleted = async (id: number) => {
     try {
-      await bloodRequestAPI.update(id, { status: 'Fulfilled' });
+      await bloodRequestAPI.update(id, { status: 'Completed' });
+      
+      // Create notification for admin
+      try {
+        await notificationAPI.create({
+          userId: 1, // Admin user ID (assuming admin has ID 1)
+          message: `Blood request #${id} has been marked as completed by recipient and needs admin fulfillment.`,
+          type: 'BloodRequest',
+          isRead: false
+        });
+      } catch (notificationError) {
+        // Admin notification failed - continue with success flow
+      }
+      
       loadRequests();
-      toast.success('Request marked as fulfilled successfully!');
+      toast.success('Request marked as completed successfully! Admin has been notified.');
     } catch (error) {
-      console.error('Error marking request as fulfilled:', error);
-      toast.error('Failed to mark request as fulfilled');
+      toast.error('Failed to mark request as completed');
     }
   };
 
@@ -73,6 +88,7 @@ export default function RecipientBloodRequestList() {
       case 'pending': return 'warning';
       case 'approved': return 'info';
       case 'fulfilled': return 'success';
+      case 'completed': return 'info';
       case 'cancelled': return 'error';
       default: return 'default';
     }
@@ -91,28 +107,28 @@ export default function RecipientBloodRequestList() {
   if (loading) return <Loader message="Loading your requests..." />;
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', width: '100vw', p: 3 }}>
-      <Typography variant="h5" gutterBottom sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
+    <Box className="page-container">
+      <Typography variant="h5" gutterBottom className="page-title">
         My Blood Requests
       </Typography>
 
       <TableContainer component={Paper}>
         <Table>
-          <TableHead sx={{ bgcolor: '#ffebee' }}>
+          <TableHead className="table-header-pink">
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Request ID</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Blood Group</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Quantity</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Urgency</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Request Date</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+              <TableCell className="table-header-cell">Request ID</TableCell>
+              <TableCell className="table-header-cell">Blood Group</TableCell>
+              <TableCell className="table-header-cell">Quantity</TableCell>
+              <TableCell className="table-header-cell">Urgency</TableCell>
+              <TableCell className="table-header-cell">Status</TableCell>
+              <TableCell className="table-header-cell">Request Date</TableCell>
+              <TableCell className="table-header-cell">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {requests.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} sx={{ textAlign: 'center', py: 3 }}>
+                <TableCell colSpan={7} className="table-empty-cell">
                   No blood requests found. Create your first request!
                 </TableCell>
               </TableRow>
@@ -153,15 +169,15 @@ export default function RecipientBloodRequestList() {
                     >
                       <Delete />
                     </IconButton>
-                    {(request.status === 'Pending' || request.status === 'Approved') && (
+                    {request.status === 'Approved' && (
                       <Button
                         variant="contained"
                         color="success"
                         size="small"
-                        onClick={() => handleMarkFulfilled(request.id)}
-                        sx={{ ml: 1 }}
+                        onClick={() => handleMarkCompleted(request.id)}
+                        className="action-button"
                       >
-                        Mark Fulfilled
+                        Mark Completed
                       </Button>
                     )}
                   </TableCell>

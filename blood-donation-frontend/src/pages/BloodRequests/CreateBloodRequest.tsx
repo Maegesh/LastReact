@@ -5,10 +5,11 @@ import {
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { bloodBankAPI } from '../../api/bloodBank.api';
 import { notificationAPI } from '../../api/notification.api';
 import { recipientAPI } from '../../api/recipient.api';
+import { bloodBankAPI } from '../../api/bloodBank.api';
 import type { BloodBank } from '../../types/BloodBank';
+import '../../styles/common.css';
 
 interface CreateBloodRequestProps {
   onRequestCreated?: () => void;
@@ -27,6 +28,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
+
   const [formData, setFormData] = useState<BloodRequestData>({
     bloodGroupNeeded: '',
     quantity: 1,
@@ -36,7 +38,6 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   });
 
   useEffect(() => {
-    loadBloodBanks();
     loadRecipientProfile();
   }, []);
 
@@ -53,40 +54,13 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
         }));
       }
     } catch (error) {
-      console.error('Error loading recipient profile:', error);
+      // Profile loading failed - form will use empty values
     }
   };
 
-  const loadBloodBanks = async () => {
-    try {
-      const token = localStorage.getItem('auth-token');
-      if (!token) {
-        console.log('No auth token found, using fallback blood banks');
-        setBloodBanks([
-          { id: 1, name: 'City General Hospital Blood Bank', location: 'Downtown', contactNumber: '123-456-7890', email: 'blood@citygeneral.com', capacity: 500 },
-          { id: 2, name: 'Regional Medical Center', location: 'Uptown', contactNumber: '098-765-4321', email: 'blood@regional.com', capacity: 300 },
-          { id: 3, name: 'Community Health Blood Bank', location: 'Suburbs', contactNumber: '555-123-4567', email: 'blood@community.com', capacity: 200 }
-        ]);
-        return;
-      }
-      
-      const response = await bloodBankAPI.getAll();
-      const banks = response.data || response || [];
-      setBloodBanks(Array.isArray(banks) ? banks : []);
-    } catch (error: any) {
-      console.error('Error loading blood banks:', error);
-      if (error.response?.status === 403) {
-        // Use fallback data when authorization fails
-        setBloodBanks([
-          { id: 1, name: 'City General Hospital Blood Bank', location: 'Downtown', contactNumber: '123-456-7890', email: 'blood@citygeneral.com', capacity: 500 },
-          { id: 2, name: 'Regional Medical Center', location: 'Uptown', contactNumber: '098-765-4321', email: 'blood@regional.com', capacity: 300 },
-          { id: 3, name: 'Community Health Blood Bank', location: 'Suburbs', contactNumber: '555-123-4567', email: 'blood@community.com', capacity: 200 }
-        ]);
-      } else {
-        setError('Failed to load blood banks. Using default options.');
-      }
-    }
-  };
+
+
+
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
@@ -99,7 +73,6 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
 
     try {
       const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log('Current user:', currentUser);
       
       const requestData = {
         recipientId: currentUser.id,
@@ -109,7 +82,6 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
         hospitalName: formData.hospitalName,
         medicalReason: formData.medicalReason
       };
-      console.log('Request data:', requestData);
 
       await bloodRequestAPI.create(requestData);
       
@@ -122,7 +94,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
           isRead: false
         });
       } catch (notificationError) {
-        console.error('Error creating notification:', notificationError);
+        // Notification creation failed - continue with success flow
       }
       
       setSuccess('Blood request created successfully! Your blood is under progress. Donors will be notified and you will receive updates.');
@@ -138,8 +110,6 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
       
       onRequestCreated?.();
     } catch (error: any) {
-      console.error('Blood request creation error:', error);
-      console.error('Error response:', error.response);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to create blood request';
       
       if (errorMessage.includes('profile not found')) {
@@ -157,8 +127,8 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', width: '100vw', p: 3 }}>
-      <Typography variant="h5" gutterBottom sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
+    <Box className="page-container">
+      <Typography variant="h5" gutterBottom className="page-title">
         Create Blood Request
       </Typography>
 
@@ -168,8 +138,8 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
       <Card>
         <CardContent>
           <Box component="form" onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+            <Box className="form-container">
+              <Box className="form-grid">
                 <FormControl fullWidth required>
                   <InputLabel>Blood Group Needed</InputLabel>
                   <Select
@@ -233,7 +203,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
                 variant="contained"
                 startIcon={<Add />}
                 disabled={loading}
-                sx={{ bgcolor: '#d32f2f', py: 1.5, mt: 2 }}
+                className="primary-button"
               >
                 {loading ? 'Creating Request...' : 'Create Blood Request'}
               </Button>

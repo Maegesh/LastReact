@@ -21,7 +21,7 @@ namespace BloodDonationSystem.Dtos
     {
         [Required(ErrorMessage = "Status is required")]
         [StringLength(20, ErrorMessage = "Status cannot exceed 20 characters")]
-        [RegularExpression("^(Pending|Approved|Fulfilled|Cancelled)$", ErrorMessage = "Status must be Pending, Approved, Fulfilled, or Cancelled")]
+            [RegularExpression("^(Pending|Approved|Completed|Fulfilled|Cancelled)$", ErrorMessage = "Status must be Pending, Approved, Completed, Fulfilled, or Cancelled")]
         public string Status { get; set; } = null!;
     }
 

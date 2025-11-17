@@ -80,7 +80,7 @@ namespace BloodDonationSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "0")]
+        [Authorize]
         public async Task<ActionResult<NotificationLogResponseDto>> CreateNotification([FromBody] NotificationLogCreateDto notificationDto)
         {
             try

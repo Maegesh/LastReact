@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Container, Typography, Paper, Avatar, IconButton, Dialog, DialogTitle,
+  Box, Container, Typography, Paper, Avatar, Dialog, DialogTitle,
   DialogContent, DialogActions, Button, TextField, FormControl, InputLabel,
   Select, MenuItem, Chip
 } from '@mui/material';
 import {
-  Bloodtype, Add, Notifications, Person, Logout, TrendingUp, Edit, PhotoCamera
+  Bloodtype, Add, Notifications, TrendingUp, PhotoCamera
 } from '@mui/icons-material';
 import Loader from '../../components/Loader';
-import RecipientBloodRequestList from '../BloodRequests/RecipientBloodRequestList';
-import CreateBloodRequest from '../BloodRequests/CreateBloodRequest';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { recipientAPI } from '../../api/recipient.api';
 import { tokenstore } from '../../auth/tokenstore';
@@ -29,8 +27,6 @@ export default function RecipientDashboard() {
     lastName: '',
     email: '',
     phone: '',
-    bloodGroupNeeded: '',
-    medicalCondition: '',
     profileImageUrl: ''
   });
 
@@ -84,8 +80,6 @@ export default function RecipientDashboard() {
             lastName: updatedUser.lastName || '',
             email: updatedUser.email || '',
             phone: updatedUser.phone || '',
-            bloodGroupNeeded: profile.bloodGroupNeeded || '',
-            medicalCondition: profile.medicalCondition || '',
             profileImageUrl: updatedUser.profileImageUrl ? `http://localhost:5082${updatedUser.profileImageUrl}` : ''
           });
         } catch (error) {
@@ -112,19 +106,10 @@ export default function RecipientDashboard() {
   const handleProfileUpdate = async () => {
     try {
       if (recipientProfile) {
-        // Update recipient profile data
-        await recipientAPI.update(recipientProfile.id, {
-          bloodGroupNeeded: profileForm.bloodGroupNeeded,
-          medicalCondition: profileForm.medicalCondition
-        });
-        
-        // Update user data (name, email, phone) - but NOT profileImageUrl here
-        // ProfileImageUrl is updated separately via image upload endpoint
         const userUpdateData = {
           firstName: profileForm.firstName,
           lastName: profileForm.lastName,
           phone: profileForm.phone
-          // Note: profileImageUrl is handled by the upload endpoint
         };
         
         const token = tokenstore.get();
@@ -688,31 +673,7 @@ export default function RecipientDashboard() {
                 />
               </Box>
               
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Blood Group Needed</InputLabel>
-                  <Select
-                    value={profileForm.bloodGroupNeeded}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, bloodGroupNeeded: e.target.value }))}
-                    label="Blood Group Needed"
-                  >
-                    {bloodGroups.map(group => (
-                      <MenuItem key={group} value={group}>
-                        <Chip label={group} sx={{ bgcolor: '#d32f2f', color: 'white' }} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                
-                <TextField
-                  label="Medical Condition"
-                  value={profileForm.medicalCondition}
-                  onChange={(e) => setProfileForm(prev => ({ ...prev, medicalCondition: e.target.value }))}
-                  fullWidth
-                  multiline
-                  rows={2}
-                />
-              </Box>
+
             </Box>
           </DialogContent>
           <DialogActions>

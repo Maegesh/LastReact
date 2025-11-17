@@ -7,11 +7,11 @@ import {
 } from '@mui/material';
 import { 
   PersonAdd, Bloodtype, Favorite, VolunteerActivism, 
-  LocalHospital, Security, CheckCircle, ArrowBack
+  LocalHospital, CheckCircle, ArrowBack
 } from '@mui/icons-material';
 import { authAPI } from '../../api/auth.api';
 import { toast } from 'react-toastify';
-
+9
 interface DonorSignupData {
   firstName: string;
   lastName: string;
@@ -437,7 +437,7 @@ export default function Signup() {
                     fullWidth
                     sx={{ mb: 2 }}
                     error={!!validationErrors.password}
-                    helperText={validationErrors.password || 'Must contain uppercase, lowercase, and number'}
+                    helperText={validationErrors.password }
                   />
                   
                   <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
@@ -601,7 +601,7 @@ export default function Signup() {
                     fullWidth
                     sx={{ mb: 2 }}
                     error={!!validationErrors.password}
-                    helperText={validationErrors.password || 'Must contain uppercase, lowercase, and number'}
+                    helperText={validationErrors.password}
                   />
                   
                   <TextField
@@ -677,8 +677,6 @@ export default function Signup() {
           </CardContent>
         </Card>
       </Box>
-
-
     </Box>
   );
 }

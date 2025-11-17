@@ -20,13 +20,16 @@ export default function RecipientBloodBankList() {
   }, []);
 
   const loadBloodBanks = async () => {
+    if ((window as any).recipientBloodBanksLoading) return;
     try {
+      (window as any).recipientBloodBanksLoading = true;
       const response = await bloodBankAPI.getAll();
       setBloodBanks(response.data || []);
     } catch (error) {
       console.error('Error loading blood banks:', error);
     } finally {
       setLoading(false);
+      (window as any).recipientBloodBanksLoading = false;
     }
   };
 

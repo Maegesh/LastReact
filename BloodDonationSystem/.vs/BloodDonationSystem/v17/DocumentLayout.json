@@ -3,6 +3,58 @@
   "WorkspaceRootPath": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donationrecordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donationrecordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\blooddonationsystem.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\blooddonationsystem.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\recipientprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\recipientprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\notificationlogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\notificationlogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donorprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donorprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donorrequestlinkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donorrequestlinkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodstockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodstockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodrequestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodrequestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\dtos\\recipientprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\dtos\\recipientprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -19,16 +71,8 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\services\\bloodrequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\services\\bloodrequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodrequestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodrequestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\services\\appointmentservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,20 +83,8 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\dtos\\donorprofiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\services\\donorprofileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\services\\donorprofileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donorprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donorprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\recipientprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\recipientprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\services\\donationrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -63,20 +95,8 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\wwwroot\\uploads\\profiles\\test-image.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\services\\recipientprofileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\services\\recipientprofileservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\notificationlogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\notificationlogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donationrecordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donationrecordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\data\\bloodcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -85,10 +105,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\dtos\\appointmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\dtos\\appointmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\dtos\\authdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -139,10 +155,6 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\interface\\iuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodstockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodstockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\repositories\\bloodrequestrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\repositories\\bloodrequestrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -153,14 +165,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\repositories\\donationrecordrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\repositories\\donationrecordrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\donorrequestlinkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\donorrequestlinkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\controllers\\bloodbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\controllers\\bloodbankcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\repositories\\bloodbankrepo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -215,10 +219,6 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\models\\donorprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -247,10 +247,6 @@
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\blooddonationsystem.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\blooddonationsystem.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|c:\\users\\lithe\\newreactmainproject\\blooddonationsystem\\blooddonationsystem\\interface\\idonorprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DDB9B961-2239-45D2-96AE-BB65D1C0B681}|BloodDonationSystem\\BloodDonationSystem.csproj|solutionrelative:blooddonationsystem\\interface\\idonorprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -277,7 +273,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 296,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -300,72 +296,194 @@
               "Name": "ST:0:0:{a80febb4-e7e0-4147-b476-21aaf2453969}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "BloodRequestController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodRequestController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodRequestController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodRequestController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodRequestController.cs",
-              "ViewState": "AgIAAMYAAAAAAAAAAAAuwM4AAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T10:14:27.809Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "BloodRequestService.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodRequestService.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\BloodRequestService.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodRequestService.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Services\\BloodRequestService.cs",
-              "ViewState": "AgIAANcBAAAAAAAAAAAAABAAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T18:10:04.831Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "RecipientProfileController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
+              "ViewState": "AgIAAHEAAAAAAAAAAAAswGUAAACBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T11:58:24.852Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\UserController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAiwH0AAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:15:24.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Program.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Program.cs",
               "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Program.cs",
               "RelativeToolTip": "BloodDonationSystem\\Program.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAAEIAAABCAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-03T05:33:09.406Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\User.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\User.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Models\\User.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAACUAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T17:05:32.02Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "UserRole.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\UserRole.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\UserRole.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\UserRole.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Models\\UserRole.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:07:35.366Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "BloodDonationSystem.http",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.http",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\BloodDonationSystem.http",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.http",
+              "RelativeToolTip": "BloodDonationSystem\\BloodDonationSystem.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-11-04T09:50:13.903Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DonationRecordController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonationRecordController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonationRecordController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonationRecordController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonationRecordController.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAA7wEoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T17:41:07.689Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "NotificationLogController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\NotificationLogController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\NotificationLogController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\NotificationLogController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\NotificationLogController.cs",
+              "ViewState": "AgIAAHMAAAAAAAAAAAAqwI0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-06T21:13:35.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DonorProfileController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorProfileController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonorProfileController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorProfileController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonorProfileController.cs",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAuwDkAAABtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-03T10:45:19.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DonorRequestLinkController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAqwA8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-06T07:09:40.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "BloodStockController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodStockController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodStockController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodStockController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodStockController.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T17:41:41.775Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "BloodRequestController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodRequestController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodRequestController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodRequestController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodRequestController.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAIwM4AAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T10:14:27.809Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "BloodBankController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodBankController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodBankController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodBankController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodBankController.cs",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAswBMAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T10:13:54.416Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-06T12:19:55.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AppointmentController.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AppointmentController.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\AppointmentController.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AppointmentController.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Controllers\\AppointmentController.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAYwGgAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-07T06:05:39.27Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "RecipientProfileDto.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAmwEYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T10:24:52.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "UserDto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\UserDto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\UserDto.cs",
@@ -373,29 +491,47 @@
               "RelativeToolTip": "BloodDonationSystem\\Dtos\\UserDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T09:29:08.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T09:29:08.842Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "RecipientProfileDto.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Dtos\\RecipientProfileDto.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAA6wAgAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 15,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\UserRole.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\UserRole.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\UserRole.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Models\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T10:24:52.124Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+              "WhenOpened": "2025-11-04T07:07:35.366Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\User.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\User.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Models\\User.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACUAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-02T17:05:32.02Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "BloodRequestService.cs",
+              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodRequestService.cs",
+              "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\BloodRequestService.cs",
+              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodRequestService.cs",
+              "RelativeToolTip": "BloodDonationSystem\\Services\\BloodRequestService.cs",
+              "ViewState": "AgIAANcBAAAAAAAAAAAAABAAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T18:10:04.831Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "AppointmentService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\AppointmentService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\AppointmentService.cs",
@@ -407,7 +543,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 20,
               "Title": "DonorProfileService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\DonorProfileService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\DonorProfileService.cs",
@@ -419,19 +555,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\UserController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\UserController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAKkAAAAAAAAAAADwv30AAABPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T09:15:24.326Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 19,
               "Title": "DonorProfiledto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\DonorProfiledto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\DonorProfiledto.cs",
@@ -443,19 +567,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "DonorProfileController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorProfileController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonorProfileController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorProfileController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonorProfileController.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAgwDkAAABtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-03T10:45:19.521Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 21,
               "Title": "DonationRecordService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\DonationRecordService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\DonationRecordService.cs",
@@ -467,31 +579,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "RecipientProfileController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\RecipientProfileController.cs",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAowGUAAACBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-05T11:58:24.852Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "DonationRecordController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonationRecordController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonationRecordController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonationRecordController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonationRecordController.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAkwEoAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-05T17:41:07.689Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 22,
               "Title": "test-image.txt",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\wwwroot\\uploads\\profiles\\test-image.txt",
               "RelativeDocumentMoniker": "BloodDonationSystem\\wwwroot\\uploads\\profiles\\test-image.txt",
@@ -503,7 +591,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 23,
               "Title": "RecipientProfileService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\RecipientProfileService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\RecipientProfileService.cs",
@@ -515,31 +603,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\AuthController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T12:19:55.696Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "NotificationLogController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\NotificationLogController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\NotificationLogController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\NotificationLogController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\NotificationLogController.cs",
-              "ViewState": "AgIAAHsAAAAAAAAAAAAuwI0AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T21:13:35.397Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 25,
               "Title": "AppointmentDto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\AppointmentDto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\AppointmentDto.cs",
@@ -551,7 +615,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 24,
               "Title": "BloodContext.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Data\\BloodContext.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Data\\BloodContext.cs",
@@ -563,19 +627,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "AppointmentController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AppointmentController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\AppointmentController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\AppointmentController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\AppointmentController.cs",
-              "ViewState": "AgIAAJkAAAAAAAAAAAAYwGgAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T06:05:39.27Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 27,
               "Title": "PasswordHasher.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\PasswordHasher.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\PasswordHasher.cs",
@@ -587,7 +639,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 26,
               "Title": "AuthDto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\AuthDto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\AuthDto.cs",
@@ -599,7 +651,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 28,
               "Title": "NotificationLog.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\NotificationLog.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\NotificationLog.cs",
@@ -611,7 +663,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 29,
               "Title": "IRecipientProfile.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Interface\\IRecipientProfile.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Interface\\IRecipientProfile.cs",
@@ -623,7 +675,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 31,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\UserService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\UserService.cs",
@@ -635,7 +687,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 32,
               "Title": "DonorRequestLinkService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\DonorRequestLinkService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\DonorRequestLinkService.cs",
@@ -647,7 +699,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 33,
               "Title": "NotificationLogService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\NotificationLogService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\NotificationLogService.cs",
@@ -659,7 +711,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 30,
               "Title": "IToken.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Interface\\IToken.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Interface\\IToken.cs",
@@ -671,7 +723,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 35,
               "Title": "RecipientProfileRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\RecipientProfileRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\RecipientProfileRepo.cs",
@@ -683,7 +735,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 36,
               "Title": "UserRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\UserRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\UserRepo.cs",
@@ -695,7 +747,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 37,
               "Title": "IUser.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Interface\\IUser.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Interface\\IUser.cs",
@@ -707,7 +759,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 34,
               "Title": "TokenService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\TokenService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\TokenService.cs",
@@ -719,19 +771,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
-              "Title": "BloodStockController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodStockController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodStockController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodStockController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodStockController.cs",
-              "ViewState": "AgIAAGsAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-05T17:41:41.775Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 38,
               "Title": "BloodRequestRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\BloodRequestRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\BloodRequestRepo.cs",
@@ -743,7 +783,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 40,
               "Title": "DonationRecordRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\DonationRecordRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\DonationRecordRepo.cs",
@@ -755,19 +795,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
-              "Title": "DonorRequestLinkController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\DonorRequestLinkController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-06T07:09:40.637Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 39,
               "Title": "NotificationLogRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\NotificationLogRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\NotificationLogRepo.cs",
@@ -779,19 +807,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
-              "Title": "BloodBankController.cs",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodBankController.cs",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\Controllers\\BloodBankController.cs",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Controllers\\BloodBankController.cs",
-              "RelativeToolTip": "BloodDonationSystem\\Controllers\\BloodBankController.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAQwBMAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T10:13:54.416Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "BloodStockRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\BloodStockRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\BloodStockRepo.cs",
@@ -803,7 +819,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "AppointmentRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\AppointmentRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\AppointmentRepo.cs",
@@ -815,7 +831,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "BloodBankRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\BloodBankRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\BloodBankRepo.cs",
@@ -827,7 +843,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "BloodStockService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodStockService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\BloodStockService.cs",
@@ -839,7 +855,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "BloodStockDto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\BloodStockDto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\BloodStockDto.cs",
@@ -851,7 +867,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "BloodRequestDto.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Dtos\\BloodRequestDto.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Dtos\\BloodRequestDto.cs",
@@ -863,7 +879,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "BloodBankService.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Services\\BloodBankService.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Services\\BloodBankService.cs",
@@ -875,7 +891,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "DonorProfileRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\DonorProfileRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\DonorProfileRepo.cs",
@@ -887,7 +903,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "BloodStock.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\BloodStock.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\BloodStock.cs",
@@ -899,7 +915,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "DonorRequestLinkRepo.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Repositories\\DonorRequestLinkRepo.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Repositories\\DonorRequestLinkRepo.cs",
@@ -923,7 +939,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "DonorRequestLink.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\DonorRequestLink.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\DonorRequestLink.cs",
@@ -935,7 +951,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "RecipientProfile.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\RecipientProfile.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\RecipientProfile.cs",
@@ -948,18 +964,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 53,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\appsettings.json",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\appsettings.json",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\appsettings.json",
-              "RelativeToolTip": "BloodDonationSystem\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-03T06:33:48.067Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 52,
               "Title": "DonorProfile.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\DonorProfile.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\DonorProfile.cs",
@@ -1044,18 +1048,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 61,
-              "Title": "BloodDonationSystem.http",
-              "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.http",
-              "RelativeDocumentMoniker": "BloodDonationSystem\\BloodDonationSystem.http",
-              "ToolTip": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.http",
-              "RelativeToolTip": "BloodDonationSystem\\BloodDonationSystem.http",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2025-11-04T09:50:13.903Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 62,
               "Title": "IDonorProfile.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Interface\\IDonorProfile.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Interface\\IDonorProfile.cs",
@@ -1067,7 +1059,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 62,
               "Title": "BloodRequest.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\BloodRequest.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\BloodRequest.cs",
@@ -1079,7 +1071,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 63,
               "Title": "Appointment.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\Models\\Appointment.cs",
               "RelativeDocumentMoniker": "BloodDonationSystem\\Models\\Appointment.cs",
@@ -1091,7 +1083,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 64,
               "Title": "BloodDonationSystem.csproj",
               "DocumentMoniker": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
               "RelativeDocumentMoniker": "BloodDonationSystem\\BloodDonationSystem.csproj",
@@ -1103,7 +1095,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 65,
               "Title": "20251103094812_initial.cs",
               "DocumentMoniker": "C:\\Users\\lithe\\Source\\Repos\\BloodDonationSystem\\BloodDonationSystem\\Migrations\\20251103094812_initial.cs",
               "RelativeDocumentMoniker": "..\\..\\Source\\Repos\\BloodDonationSystem\\BloodDonationSystem\\Migrations\\20251103094812_initial.cs",

@@ -3220,7 +3220,7 @@
           "status": {
             "maxLength": 20,
             "minLength": 0,
-            "pattern": "^(Pending|Approved|Fulfilled|Cancelled)$",
+            "pattern": "^(Pending|Approved|Completed|Fulfilled|Cancelled)$",
             "type": "string"
           }
         },

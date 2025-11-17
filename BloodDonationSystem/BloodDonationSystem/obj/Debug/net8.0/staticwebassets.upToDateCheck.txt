@@ -8,3 +8,5 @@ wwwroot\uploads\profiles\user_35_fd43e9e6-b9d2-4123-8803-0a57ecc18dcd.jpg
 wwwroot\uploads\profiles\user_3_79366256-d230-4712-8088-391f42919a9e.jpeg
 wwwroot\uploads\profiles\user_8_d1210ff8-e365-4eaf-a9d7-734853637e31.jpg
 wwwroot\uploads\profiles\user_37_2fef26d1-7462-47e7-aa7e-500a03b82a78.jpg
+wwwroot\uploads\profiles\user_42_8289de1f-6c7d-4720-9753-c50044ef57ae.jpeg
+wwwroot\uploads\profiles\user_2_a9b35564-b44d-4e57-9175-991f16cef50b.jpeg
