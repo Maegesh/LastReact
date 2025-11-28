@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Typography, Card, CardContent, TextField, Button,
   FormControl, InputLabel, Select, MenuItem, Alert, Grid
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
+import { notificationAPI } from '../../api/notification.api';
+import { recipientAPI } from '../../api/recipient.api';
+import { bloodBankAPI } from '../../api/bloodBank.api';
+import { useAppDispatch } from '../../store/hooks';
+import { fetchNotifications } from '../../store/notificationSlice';
+import type { BloodBank } from '../../types/BloodBank';
+import '../../styles/common.css';
 
 interface CreateBloodRequestProps {
   onRequestCreated?: () => void;
@@ -14,23 +21,26 @@ interface BloodRequestData {
   bloodGroupNeeded: string;
   quantity: number;
   urgencyLevel: string;
-  hospitalName: string;
-  contactNumber: string;
-  medicalReason: string;
 }
 
 export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequestProps = {}) {
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
+
   const [formData, setFormData] = useState<BloodRequestData>({
     bloodGroupNeeded: '',
     quantity: 1,
-    urgencyLevel: 'Medium',
-    hospitalName: '',
-    contactNumber: '',
-    medicalReason: ''
+    urgencyLevel: 'Medium'
   });
+
+  // Remove auto-loading of recipient profile to prevent duplicate API calls
+
+
+
+
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const urgencyLevels = ['Low', 'Medium', 'High', 'Critical'];
@@ -43,36 +53,41 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
 
     try {
       const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log('Current user:', currentUser);
       
       const requestData = {
         recipientId: currentUser.id,
         bloodGroupNeeded: formData.bloodGroupNeeded,
         quantity: formData.quantity,
-        urgencyLevel: formData.urgencyLevel,
-        hospitalName: formData.hospitalName,
-        contactNumber: formData.contactNumber,
-        medicalReason: formData.medicalReason
+        urgencyLevel: formData.urgencyLevel
       };
-      console.log('Request data:', requestData);
 
       await bloodRequestAPI.create(requestData);
-      setSuccess('Blood request created successfully! Donors will be notified.');
+      
+      // Create notification for recipient
+      try {
+        await notificationAPI.create({
+          userId: currentUser.id,
+          message: `Your blood request for ${formData.bloodGroupNeeded} (${formData.quantity} units) is under progress. Donors are being notified.`,
+          type: 'BloodRequest',
+          isRead: false
+        });
+        // Force refresh notifications
+        dispatch(fetchNotifications());
+      } catch (notificationError) {
+        // Notification creation failed - continue with success flow
+      }
+      
+      setSuccess('Blood request created successfully! Your blood is under progress. Donors will be notified and you will receive updates.');
       
       // Reset form
       setFormData({
         bloodGroupNeeded: '',
         quantity: 1,
-        urgencyLevel: 'Medium',
-        hospitalName: '',
-        contactNumber: '',
-        medicalReason: ''
+        urgencyLevel: 'Medium'
       });
       
       onRequestCreated?.();
     } catch (error: any) {
-      console.error('Blood request creation error:', error);
-      console.error('Error response:', error.response);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to create blood request';
       
       if (errorMessage.includes('profile not found')) {
@@ -90,8 +105,8 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', width: '100vw', p: 3 }}>
-      <Typography variant="h5" gutterBottom sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
+    <Box className="page-container">
+      <Typography variant="h5" gutterBottom className="page-title">
         Create Blood Request
       </Typography>
 
@@ -101,8 +116,8 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
       <Card>
         <CardContent>
           <Box component="form" onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+            <Box className="form-container">
+              <Box className="form-grid">
                 <FormControl fullWidth required>
                   <InputLabel>Blood Group Needed</InputLabel>
                   <Select
@@ -141,39 +156,14 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
                 </Select>
               </FormControl>
 
-              <TextField
-                label="Hospital Name"
-                value={formData.hospitalName}
-                onChange={(e) => handleInputChange('hospitalName', e.target.value)}
-                required
-                fullWidth
-              />
 
-              <TextField
-                label="Contact Number"
-                value={formData.contactNumber}
-                onChange={(e) => handleInputChange('contactNumber', e.target.value)}
-                required
-                fullWidth
-              />
-
-              <TextField
-                label="Medical Reason"
-                value={formData.medicalReason}
-                onChange={(e) => handleInputChange('medicalReason', e.target.value)}
-                required
-                fullWidth
-                multiline
-                rows={3}
-                placeholder="Please describe the medical condition requiring blood transfusion"
-              />
 
               <Button
                 type="submit"
                 variant="contained"
                 startIcon={<Add />}
                 disabled={loading}
-                sx={{ bgcolor: '#d32f2f', py: 1.5, mt: 2 }}
+                className="primary-button"
               >
                 {loading ? 'Creating Request...' : 'Create Blood Request'}
               </Button>

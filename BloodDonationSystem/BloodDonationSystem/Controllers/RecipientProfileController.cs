@@ -121,5 +121,27 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("get-by-user")]
+        [Authorize(Roles = "2")] // Recipients only
+        public async Task<ActionResult<RecipientProfileResponseDto>> GetRecipientByUserIdPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var recipient = await _recipientService.GetRecipientByUserId(payload.UserId);
+                return Ok(recipient);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

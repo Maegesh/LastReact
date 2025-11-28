@@ -88,5 +88,23 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("get-by-donor")]
+        [Authorize(Roles = "0,1")] // Admin or Donor
+        public async Task<ActionResult<IEnumerable<DonationRecordResponseDto>>> GetDonationsByDonorPayload([FromBody] DonorIdPayload payload)
+        {
+            try
+            {
+                if (payload.DonorId <= 0)
+                    return BadRequest(new { message = "Invalid donor ID" });
+
+                var donations = await _donationService.GetDonationsByDonor(payload.DonorId);
+                return Ok(donations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

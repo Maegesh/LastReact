@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xgQOFfaxtKg=",
+  "dgSpecHash": "ewTn4Q6JmU4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
+  "projectFilePath": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lithe\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\lithe\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

@@ -118,6 +118,32 @@ namespace BloodDonationSystem.Services
             return MapToResponseDto(updated);
         }
 
+        public async Task<object> GetDonorOverview(int userId)
+        {
+            var donor = await _donorRepo.GetDonorByUserId(userId);
+
+            // Get blood requests and blood banks sequentially to avoid DbContext threading issues
+            var bloodRequests = donor.BloodGroup != null ? 
+                await _donorRepo.GetBloodRequestsByBloodGroup(donor.BloodGroup) : new List<BloodRequest>();
+            var bloodBanks = await _donorRepo.GetAllBloodBanks();
+
+            return new
+            {
+                profile = MapToResponseDto(donor),
+                user = donor.User,
+                bloodRequests = bloodRequests.Where(r => r.Status == "Pending").ToList(),
+                appointments = donor.Appointments?.ToList() ?? new List<Appointment>(),
+                donations = donor.DonationRecords?.ToList() ?? new List<DonationRecord>(),
+                stats = new
+                {
+                    pendingRequests = bloodRequests.Count(r => r.Status == "Pending"),
+                    appointments = donor.Appointments?.Count() ?? 0,
+                    donations = donor.DonationRecords?.Count() ?? 0,
+                    bloodBanks = bloodBanks.Count()
+                }
+            };
+        }
+
         private DonorProfileResponseDto MapToResponseDto(DonorProfile donor)
         {
             return new DonorProfileResponseDto

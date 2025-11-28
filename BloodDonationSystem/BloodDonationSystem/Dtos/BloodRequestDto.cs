@@ -21,7 +21,7 @@ namespace BloodDonationSystem.Dtos
     {
         [Required(ErrorMessage = "Status is required")]
         [StringLength(20, ErrorMessage = "Status cannot exceed 20 characters")]
-        [RegularExpression("^(Pending|Approved|Fulfilled|Cancelled)$", ErrorMessage = "Status must be Pending, Approved, Fulfilled, or Cancelled")]
+            [RegularExpression("^(Pending|Approved|Completed|Fulfilled|Cancelled)$", ErrorMessage = "Status must be Pending, Approved, Completed, Fulfilled, or Cancelled")]
         public string Status { get; set; } = null!;
     }
 
@@ -42,5 +42,26 @@ namespace BloodDonationSystem.Dtos
     {
         [Required(ErrorMessage = "Donor ID is required")]
         public int DonorId { get; set; }
+    }
+
+    public class DonorResponseDto
+    {
+        [Required(ErrorMessage = "Donor ID is required")]
+        public int DonorId { get; set; }
+
+        [Required(ErrorMessage = "Response is required")]
+        [RegularExpression("^(accept|decline)$", ErrorMessage = "Response must be 'accept' or 'decline'")]
+        public string Response { get; set; } = null!;
+    }
+
+    public class BloodRequestStatusUpdatePayload
+    {
+        [Required(ErrorMessage = "Blood request ID is required")]
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Status is required")]
+        [StringLength(20, ErrorMessage = "Status cannot exceed 20 characters")]
+        [RegularExpression("^(Pending|Approved|Completed|Fulfilled|Cancelled)$", ErrorMessage = "Status must be Pending, Approved, Completed, Fulfilled, or Cancelled")]
+        public string Status { get; set; } = null!;
     }
 }

@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { bloodBankAPI } from '../api/bloodBank.api';
 import type { CreateBloodBank } from '../types/BloodBank';
+import { toast } from 'react-toastify';
 
 interface AddBloodBankDialogProps {
   open: boolean;
@@ -18,8 +19,7 @@ export default function AddBloodBankDialog({ open, onClose, onSuccess }: AddBloo
     location: '',
     contactNumber: '',
     email: '',
-    capacity: 0,
-    managedBy: ''
+    capacity: 0
   });
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +38,7 @@ export default function AddBloodBankDialog({ open, onClose, onSuccess }: AddBloo
       handleClose();
     } catch (error) {
       console.error('Error creating blood bank:', error);
-      alert('Failed to create blood bank');
+      toast.error('Failed to create blood bank');
     } finally {
       setLoading(false);
     }
@@ -50,8 +50,7 @@ export default function AddBloodBankDialog({ open, onClose, onSuccess }: AddBloo
       location: '',
       contactNumber: '',
       email: '',
-      capacity: 0,
-      managedBy: ''
+      capacity: 0
     });
     onClose();
   };
@@ -106,13 +105,6 @@ export default function AddBloodBankDialog({ open, onClose, onSuccess }: AddBloo
               onChange={handleChange('capacity')}
               required
               inputProps={{ min: 1 }}
-            />
-            
-            <TextField
-              fullWidth
-              label="Managed By"
-              value={formData.managedBy}
-              onChange={handleChange('managedBy')}
             />
           </Stack>
         </DialogContent>

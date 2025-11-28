@@ -9,7 +9,7 @@ export interface BloodBank {
 }
 
 export interface CreateBloodBank {
-  name: string;
+  name: string; 
   location: string;
   contactNumber: string;
   email: string;

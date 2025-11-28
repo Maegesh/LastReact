@@ -195,5 +195,49 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("get-by-id")]
+        [Authorize]
+        public async Task<ActionResult<UserResponseDto>> GetUserByIdPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var user = await _userService.GetUserById(payload.UserId);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("delete")]
+        [Authorize(Roles = "0")]
+        public async Task<ActionResult<UserResponseDto>> DeleteUserPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var deleted = await _userService.DeleteUser(payload.UserId);
+                return Ok(deleted);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

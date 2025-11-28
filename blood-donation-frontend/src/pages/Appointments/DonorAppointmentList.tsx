@@ -3,10 +3,9 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip 
 } from '@mui/material';
-import { appointmentAPI } from '../../api/appointment.api';
-import { donorAPI } from '../../api/donor.api';
 import type { Appointment } from '../../types/Appointment';
 import Loader from '../../components/Loader';
+import { useAppSelector } from '../../store/hooks';
 
 const getStatusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -18,32 +17,8 @@ const getStatusColor = (status: string) => {
 };
 
 export default function DonorAppointmentList() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const userId = currentUser.id;
-
-  useEffect(() => {
-    loadAppointments();
-  }, []);
-
-  const loadAppointments = async () => {
-    try {
-      setLoading(true);
-      if (userId) {
-        const donorRes = await donorAPI.getByUserId(userId);
-        const profile = donorRes.data;
-        const response = await appointmentAPI.getByDonor(profile.id);
-        setAppointments(response.data || []);
-      }
-    } catch (error) {
-      console.error('Error loading appointments:', error);
-      setAppointments([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { appointments, loading } = useAppSelector(state => state.donations);
+  const appointmentList = appointments || [];
 
   if (loading) return <Loader message="Loading appointments..." />;
 
@@ -65,14 +40,14 @@ export default function DonorAppointmentList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {appointments.length === 0 ? (
+            {appointmentList.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} sx={{ textAlign: 'center', py: 3 }}>
                   No appointments found
                 </TableCell>
               </TableRow>
             ) : (
-              appointments.map((appointment) => (
+              appointmentList.map((appointment: any) => (
                 <TableRow key={appointment.id} hover>
                   <TableCell>{appointment.id}</TableCell>
                   <TableCell>{appointment.bloodBankId}</TableCell>

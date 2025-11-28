@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Login from '../pages/Login';
-import Signup from '../pages/Signup';
-import AdminDashboard from '../pages/AdminDashboard';
-import DonorDashboard from '../pages/DonorDashboard';
-import RecipientDashboard from '../pages/RecipientDashboard';
+import Login from '../pages/Authentication/Login';
+import Signup from '../pages/Authentication/Signup';
+import AdminDashboard from '../pages/Dashboard/AdminDashboard';
+import DonorDashboard from '../pages/Dashboard/DonorDashboard';
+import RecipientDashboard from '../pages/Dashboard/RecipientDashboard';
 import ProtectedRoute from '../auth/ProtectedRoute';
 
 // Donor pages
@@ -119,6 +119,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute requiredRole={2}>
         <><Navbar title="Recipient Dashboard" userInfo={JSON.parse(localStorage.getItem('user') || '{}').firstName || JSON.parse(localStorage.getItem('user') || '{}').email} /><RecipientBloodRequestList /></>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/recipient/blood-banks",
+    element: (
+      <ProtectedRoute requiredRole={2}>
+        <><Navbar title="Recipient Dashboard" userInfo={JSON.parse(localStorage.getItem('user') || '{}').firstName || JSON.parse(localStorage.getItem('user') || '{}').email} /><BloodBankList showActions={false} /></>
       </ProtectedRoute>
     ),
   },

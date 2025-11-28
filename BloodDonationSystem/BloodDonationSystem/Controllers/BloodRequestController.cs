@@ -193,5 +193,92 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("{id}/donor-response")]
+        [Authorize(Roles = "1")]
+        public async Task<ActionResult<BloodRequestResponseDto>> DonorResponse(int id, [FromBody] dynamic responseData)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new { message = "Invalid blood request ID" });
+
+                int donorId = responseData.donorId;
+                string response = responseData.response;
+
+                var updated = await _bloodRequestService.DonorResponse(id, donorId, response);
+                return Ok(updated);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("get-by-recipient")]
+        [Authorize(Roles = "0,2")]
+        public async Task<ActionResult<IEnumerable<BloodRequestResponseDto>>> GetBloodRequestsByRecipientPayload([FromBody] RecipientIdPayload payload)
+        {
+            try
+            {
+                if (payload.RecipientId <= 0)
+                    return BadRequest(new { message = "Invalid recipient ID" });
+
+                var requests = await _bloodRequestService.GetBloodRequestsByRecipient(payload.RecipientId);
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("get-by-blood-group")]
+        [Authorize(Roles = "0,1")]
+        public async Task<ActionResult<IEnumerable<BloodRequestResponseDto>>> GetBloodRequestsByBloodGroupPayload([FromBody] BloodGroupPayload payload)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(payload.BloodGroup))
+                    return BadRequest(new { message = "Blood group cannot be empty" });
+
+                var requests = await _bloodRequestService.GetBloodRequestsByBloodGroup(payload.BloodGroup);
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("update-status")]
+        [Authorize(Roles = "0,2")]
+        public async Task<ActionResult<BloodRequestResponseDto>> UpdateBloodRequestStatus([FromBody] BloodRequestStatusUpdatePayload payload)
+        {
+            try
+            {
+                if (payload.Id <= 0)
+                    return BadRequest(new { message = "Invalid blood request ID" });
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var updateDto = new BloodRequestUpdateDto { Status = payload.Status };
+                var updated = await _bloodRequestService.UpdateBloodRequest(payload.Id, updateDto);
+                return Ok(updated);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

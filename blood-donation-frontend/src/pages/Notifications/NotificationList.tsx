@@ -4,8 +4,9 @@ import {
   TableHead, TableRow, Paper, Chip, IconButton, Tooltip 
 } from '@mui/material';
 import { MarkEmailRead } from '@mui/icons-material';
+import { useCache } from '../../hooks/useCache';
+import { fetchNotifications } from '../../store/notificationSlice';
 import { notificationAPI } from '../../api/notification.api';
-import { userAPI } from '../../api/user.api';
 import type { NotificationLog } from '../../types/NotificationLog';
 import type { User } from '../../types/User';
 import Loader from '../../components/Loader';
@@ -15,58 +16,30 @@ interface NotificationWithUser extends NotificationLog {
 }
 
 export default function NotificationList() {
+  const { data: allNotifications, loading, loadData } = useCache('notifications', fetchNotifications);
   const [notifications, setNotifications] = useState<NotificationWithUser[]>([]);
-  const [loading, setLoading] = useState(true);
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const isAdmin = currentUser.role === 0;
 
   useEffect(() => {
-    loadNotifications();
+    loadData();
   }, []);
 
-  const loadNotifications = async () => {
-    try {
-      setLoading(true);
-      
+  useEffect(() => {
+    if (allNotifications) {
       if (isAdmin) {
-        // Admin sees all notifications with user details
-        const response = await notificationAPI.getAll();
-        const notificationLogs = response.data || [];
-        
-        const notificationsWithUsers = await Promise.all(
-          notificationLogs.map(async (notification: NotificationLog) => {
-            try {
-              const userResponse = await userAPI.getById(notification.userId);
-              return { ...notification, user: userResponse.data };
-            } catch (error) {
-              return notification;
-            }
-          })
-        );
-        setNotifications(notificationsWithUsers);
+        setNotifications(allNotifications);
       } else {
-        // Donors and Recipients see only their own notifications
-        const response = await notificationAPI.getByUser(currentUser.id);
-        const notificationLogs = response.data || [];
-        setNotifications(notificationLogs);
+        const userNotifications = allNotifications.filter((n: any) => n.userId === currentUser.id);
+        setNotifications(userNotifications);
       }
-    } catch (error) {
-      console.error('Error loading notifications:', error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [allNotifications, isAdmin, currentUser.id]);
 
   const handleMarkAsRead = async (notificationId: number) => {
     try {
       await notificationAPI.markAsRead(notificationId);
-      setNotifications(prev => 
-        prev.map(notification => 
-          notification.id === notificationId 
-            ? { ...notification, isRead: true }
-            : notification
-        )
-      );
+      loadData(true);
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
@@ -80,11 +53,7 @@ export default function NotificationList() {
         {isAdmin ? 'Notifications Management' : 'My Notifications'}
       </Typography>
       
-      {!isAdmin && (
-        <Typography variant="body2" sx={{ mb: 2, color: '#666', p: 1, bgcolor: '#fff3e0', borderRadius: 1 }}>
-          Debug: Querying notifications for User ID: {currentUser.id} | Username: {currentUser.username}
-        </Typography>
-      )}
+
 
       <TableContainer component={Paper}>
         <Table>
@@ -99,7 +68,7 @@ export default function NotificationList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {notifications.length === 0 ? (
+            {(!notifications || notifications.length === 0) ? (
               <TableRow>
                 <TableCell colSpan={isAdmin ? 6 : 5} sx={{ textAlign: 'center', py: 3 }}>
                   No notifications found

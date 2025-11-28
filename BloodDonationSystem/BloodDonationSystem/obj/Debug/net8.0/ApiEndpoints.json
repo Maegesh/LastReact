@@ -156,6 +156,32 @@
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.AppointmentController",
+    "Method": "GetAppointmentsByDonorPayload",
+    "RelativePath": "api/Appointment/get-by-donor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.DonorIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.AppointmentResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.AppointmentController",
     "Method": "GetUpcomingAppointments",
     "RelativePath": "api/Appointment/upcoming",
     "HttpMethod": "GET",
@@ -165,6 +191,32 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.AppointmentResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.AppointmentController",
+    "Method": "UpdateAppointmentStatus",
+    "RelativePath": "api/Appointment/update-status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.AppointmentStatusUpdatePayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.AppointmentResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -508,6 +560,37 @@
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
+    "Method": "DonorResponse",
+    "RelativePath": "api/BloodRequest/{id}/donor-response",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "responseData",
+        "Type": "System.Object",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.BloodRequestResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
     "Method": "FulfillBloodRequest",
     "RelativePath": "api/BloodRequest/{id}/fulfill",
     "HttpMethod": "POST",
@@ -565,6 +648,58 @@
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
+    "Method": "GetBloodRequestsByBloodGroupPayload",
+    "RelativePath": "api/BloodRequest/get-by-blood-group",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.BloodGroupPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.BloodRequestResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
+    "Method": "GetBloodRequestsByRecipientPayload",
+    "RelativePath": "api/BloodRequest/get-by-recipient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.RecipientIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.BloodRequestResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
     "Method": "GetPendingBloodRequests",
     "RelativePath": "api/BloodRequest/pending",
     "HttpMethod": "GET",
@@ -600,6 +735,32 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.BloodRequestResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.BloodRequestController",
+    "Method": "UpdateBloodRequestStatus",
+    "RelativePath": "api/BloodRequest/update-status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.BloodRequestStatusUpdatePayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.BloodRequestResponseDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -739,6 +900,26 @@
     ]
   },
   {
+    "ContainingType": "BloodDonationSystem.Controllers.DashboardController",
+    "Method": "GetDashboardCounts",
+    "RelativePath": "api/Dashboard/counts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.DashboardController",
+    "Method": "GetDashboardOverview",
+    "RelativePath": "api/Dashboard/overview",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "BloodDonationSystem.Controllers.DonationRecordController",
     "Method": "GetAllDonations",
     "RelativePath": "api/DonationRecord",
@@ -821,6 +1002,32 @@
       {
         "Name": "donorId",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.DonationRecordResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.DonationRecordController",
+    "Method": "GetDonationsByDonorPayload",
+    "RelativePath": "api/DonationRecord/get-by-donor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.DonorIdPayload",
         "IsRequired": true
       }
     ],
@@ -938,6 +1145,48 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.DonorProfileController",
+    "Method": "GetDonorByUserIdPayload",
+    "RelativePath": "api/DonorProfile/get-by-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.DonorProfileResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.DonorProfileController",
+    "Method": "GetDonorOverview",
+    "RelativePath": "api/DonorProfile/overview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.DonorProfileController",
@@ -1206,6 +1455,84 @@
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.NotificationLogController",
+    "Method": "GetNotificationsByUserIdPayload",
+    "RelativePath": "api/NotificationLog/get-by-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.NotificationLogResponseDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.NotificationLogController",
+    "Method": "GetUnreadCountPayload",
+    "RelativePath": "api/NotificationLog/get-unread-count",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.NotificationLogController",
+    "Method": "MarkAsReadPayload",
+    "RelativePath": "api/NotificationLog/mark-as-read",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Dtos.IdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.NotificationLogResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.NotificationLogController",
     "Method": "GetUnreadCount",
     "RelativePath": "api/NotificationLog/unread/{userId}",
     "HttpMethod": "GET",
@@ -1255,6 +1582,42 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.NotificationLogController",
+    "Method": "GetAllNotificationsWithUsers",
+    "RelativePath": "api/NotificationLog/with-users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[BloodDonationSystem.Dtos.NotificationLogWithUserDto, BloodDonationSystem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.RecipientController",
+    "Method": "GetRecipientOverview",
+    "RelativePath": "api/Recipient/overview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "BloodDonationSystem.Controllers.RecipientProfileController",
@@ -1344,6 +1707,32 @@
       {
         "Name": "recipientDto",
         "Type": "BloodDonationSystem.Dtos.RecipientProfileUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.RecipientProfileResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.RecipientProfileController",
+    "Method": "GetRecipientByUserIdPayload",
+    "RelativePath": "api/RecipientProfile/get-by-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
         "IsRequired": true
       }
     ],
@@ -1561,6 +1950,58 @@
       {
         "Name": "imageData",
         "Type": "BloodDonationSystem.Dtos.ImageUploadDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.UserResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.UserController",
+    "Method": "DeleteUserPayload",
+    "RelativePath": "api/User/delete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "BloodDonationSystem.Dtos.UserResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "BloodDonationSystem.Controllers.UserController",
+    "Method": "GetUserByIdPayload",
+    "RelativePath": "api/User/get-by-id",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "payload",
+        "Type": "BloodDonationSystem.Controllers.UserIdPayload",
         "IsRequired": true
       }
     ],

@@ -32,6 +32,21 @@ namespace BloodDonationSystem.Controllers
             }
         }
 
+        [HttpGet("with-users")]
+        [Authorize(Roles = "0")]
+        public async Task<ActionResult<IEnumerable<NotificationLogWithUserDto>>> GetAllNotificationsWithUsers()
+        {
+            try
+            {
+                var notifications = await _notificationService.GetAllNotificationsWithUsers();
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
         [HttpGet("user/{userId}")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<NotificationLogResponseDto>>> GetNotificationsByUserId(int userId)
@@ -80,7 +95,7 @@ namespace BloodDonationSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "0")]
+        [Authorize]
         public async Task<ActionResult<NotificationLogResponseDto>> CreateNotification([FromBody] NotificationLogCreateDto notificationDto)
         {
             try
@@ -137,6 +152,77 @@ namespace BloodDonationSystem.Controllers
 
                 var count = await _notificationService.GetUnreadCount(userId);
                 return Ok(new { unreadCount = count });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("get-by-user")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<NotificationLogResponseDto>>> GetNotificationsByUserIdPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                // Validate user can only access their own notifications or admin can access all
+                var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                
+                if (payload.UserId != currentUserId && userRole != "0")
+                    return Forbid("You can only access your own notifications");
+
+                var notifications = await _notificationService.GetNotificationsByUserId(payload.UserId);
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("get-unread-count")]
+        [Authorize]
+        public async Task<ActionResult<int>> GetUnreadCountPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                
+                if (payload.UserId != currentUserId && userRole != "0")
+                    return Forbid("You can only access your own unread count");
+
+                var count = await _notificationService.GetUnreadCount(payload.UserId);
+                return Ok(new { unreadCount = count });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("mark-as-read")]
+        [Authorize]
+        public async Task<ActionResult<NotificationLogResponseDto>> MarkAsReadPayload([FromBody] IdPayload payload)
+        {
+            try
+            {
+                if (payload.Id <= 0)
+                    return BadRequest(new { message = "Invalid notification ID" });
+
+                var updated = await _notificationService.MarkAsRead(payload.Id);
+                return Ok(updated);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {

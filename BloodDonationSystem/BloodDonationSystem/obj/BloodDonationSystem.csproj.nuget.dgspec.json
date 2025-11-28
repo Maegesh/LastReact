@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj": {}
+    "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj": {
+    "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
+        "projectUniqueName": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
         "projectName": "BloodDonationSystem",
-        "projectPath": "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
+        "projectPath": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\BloodDonationSystem.csproj",
         "packagesPath": "C:\\Users\\lithe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lithe\\ReactandBackendBlood\\BloodDonationSystem\\BloodDonationSystem\\obj\\",
+        "outputPath": "C:\\Users\\lithe\\NewReactMainProject\\BloodDonationSystem\\BloodDonationSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

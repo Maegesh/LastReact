@@ -118,5 +118,50 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("get-by-user")]
+        [Authorize(Roles = "1")] // Only donors can access
+        public async Task<ActionResult<DonorProfileResponseDto>> GetDonorByUserIdPayload([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var donors = await _donorService.GetAllDonors();
+                var donor = donors.FirstOrDefault(d => d.UserId == payload.UserId);
+                
+                if (donor == null)
+                    return NotFound(new { message = "Donor profile not found" });
+                    
+                return Ok(donor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("overview")]
+        [Authorize(Roles = "1")] // Only donors can access
+        public async Task<ActionResult> GetDonorOverview([FromBody] UserIdPayload payload)
+        {
+            try
+            {
+                if (payload.UserId <= 0)
+                    return BadRequest(new { message = "Invalid user ID" });
+
+                var overview = await _donorService.GetDonorOverview(payload.UserId);
+                return Ok(overview);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

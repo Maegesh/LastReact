@@ -1,4 +1,4 @@
-﻿using BloodBankSystem.Data;
+using BloodBankSystem.Data;
 using BloodBankSystem.Models;
 using BloodDonationSystem.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +35,20 @@ namespace BloodDonationSystem.Repositories
 
             if (donor == null)
                 throw new KeyNotFoundException($"Donor with Id {id} not found");
+
+            return donor;
+        }
+
+        public async Task<DonorProfile> GetDonorByUserId(int userId)
+        {
+            var donor = await _context.DonorProfiles
+                .Include(d => d.User)
+                .Include(d => d.DonationRecords)
+                .Include(d => d.Appointments)
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+
+            if (donor == null)
+                throw new KeyNotFoundException($"Donor with UserId {userId} not found");
 
             return donor;
         }
@@ -100,6 +114,42 @@ namespace BloodDonationSystem.Repositories
             _context.DonorProfiles.Remove(donor);
             await _context.SaveChangesAsync();
             return donor;
+        }
+
+        public async Task<User> GetUserById(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException($"User with Id {userId} not found");
+            return user;
+        }
+
+        public async Task<IEnumerable<BloodRequest>> GetBloodRequestsByBloodGroup(string bloodGroup)
+        {
+            return await _context.BloodRequests
+                .Include(br => br.Recipient)
+                .ThenInclude(r => r.User)
+                .Where(br => br.BloodGroupNeeded == bloodGroup)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Appointment>> GetAppointmentsByDonor(int donorId)
+        {
+            return await _context.Appointments
+                .Where(a => a.DonorId == donorId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<DonationRecord>> GetDonationsByDonor(int donorId)
+        {
+            return await _context.DonationRecords
+                .Where(dr => dr.DonorId == donorId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BloodBank>> GetAllBloodBanks()
+        {
+            return await _context.BloodBanks.ToListAsync();
         }
     }
 }

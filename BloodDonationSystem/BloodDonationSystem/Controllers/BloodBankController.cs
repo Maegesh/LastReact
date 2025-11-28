@@ -17,7 +17,7 @@ namespace BloodDonationSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "0,1")] 
+        [Authorize(Roles = "0,1,2")] 
         public async Task<ActionResult<IEnumerable<BloodBankResponseDto>>> GetAllBloodBanks()
         {
             try

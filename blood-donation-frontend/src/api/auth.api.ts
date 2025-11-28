@@ -2,8 +2,10 @@ import { http } from "./http"
 
 export type LoginRequest = { email: string, password: string }
 export type LoginResponse = {
-    token: string; 
-    user: {
+    success: boolean;
+    message?: string;
+    token?: string; 
+    user?: {
         id: number;
         firstName: string;
         lastName: string;
@@ -42,6 +44,9 @@ export type SignupResponse = {
 
 export async function getToken(req: LoginRequest): Promise<LoginResponse> {
     const { data } = await http.post<LoginResponse>("/Auth/login", req)
+    if (!data.success) {
+        throw new Error(data.message || 'Login failed')
+    }
     return data
 }
 

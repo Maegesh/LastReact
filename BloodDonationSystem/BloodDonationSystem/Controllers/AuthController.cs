@@ -30,13 +30,13 @@ namespace BloodDonationSystem.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto login)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return Ok(new { Success = false, Message = "Invalid input data." });
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == login.Email);
 
             if (user == null)
-                return Unauthorized("Invalid email or password.");
+                return Ok(new { Success = false, Message = "Invalid email or password." });
 
             // Try both hashed and plain text password verification
             bool isValidPassword = false;
@@ -55,12 +55,13 @@ namespace BloodDonationSystem.Controllers
             }
 
             if (!isValidPassword)
-                return Unauthorized("Invalid email or password.");
+                return Ok(new { Success = false, Message = "Invalid email or password." });
 
             var token = _tokenService.GenerateToken(user);
 
             return Ok(new
             {
+                Success = true,
                 Token = token,
                 User = new { 
                     user.Id, 

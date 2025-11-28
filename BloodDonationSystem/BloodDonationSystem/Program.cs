@@ -122,10 +122,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Enable CORS
 app.UseCors("AllowReactApp");
 
-// Comment out HTTPS redirection for development
 // app.UseHttpsRedirection();
 
 // Enable static files for image serving

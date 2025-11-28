@@ -4,45 +4,34 @@ import {
   TableHead, TableRow, Paper, Chip, IconButton, Button 
 } from '@mui/material';
 import { Delete, Add } from '@mui/icons-material';
+import { useCache } from '../../hooks/useCache';
+import { fetchBloodBanks } from '../../store/bloodBankSlice';
 import { bloodBankAPI } from '../../api/bloodBank.api';
-import type { BloodBank } from '../../types/BloodBank';
 import Loader from '../../components/Loader';
 import AddBloodBankDialog from '../../components/AddBloodBankDialog';
+import { toast } from 'react-toastify';
 
 interface BloodBankListProps {
   showActions?: boolean;
 }
 
 export default function BloodBankList({ showActions = false }: BloodBankListProps) {
-  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: bloodBanks, loading, loadData } = useCache('bloodBanks', fetchBloodBanks);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    loadBloodBanks();
+    loadData();
   }, []);
-
-  const loadBloodBanks = async () => {
-    try {
-      setLoading(true);
-      const response = await bloodBankAPI.getAll();
-      setBloodBanks(response.data || []);
-    } catch (error) {
-      console.error('Error loading blood banks:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this blood bank?')) return;
     
     try {
       await bloodBankAPI.delete(id);
-      loadBloodBanks();
+      loadData();
     } catch (error) {
       console.error('Error deleting blood bank:', error);
-      alert('Failed to delete blood bank');
+      toast.error('Failed to delete blood bank');
     }
   };
 
@@ -80,14 +69,14 @@ export default function BloodBankList({ showActions = false }: BloodBankListProp
             </TableRow>
           </TableHead>
           <TableBody>
-            {bloodBanks.length === 0 ? (
+            {(!bloodBanks || bloodBanks.length === 0) ? (
               <TableRow>
                 <TableCell colSpan={showActions ? 7 : 6} sx={{ textAlign: 'center', py: 3 }}>
                   No blood banks found
                 </TableCell>
               </TableRow>
             ) : (
-              bloodBanks.map((bank) => (
+              (bloodBanks || []).map((bank: any) => (
                 <TableRow key={bank.id} hover>
                   <TableCell>{bank.id}</TableCell>
                   <TableCell sx={{ fontWeight: 'medium' }}>{bank.name}</TableCell>
@@ -114,7 +103,7 @@ export default function BloodBankList({ showActions = false }: BloodBankListProp
       <AddBloodBankDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onSuccess={loadBloodBanks}
+        onSuccess={() => loadData(true)}
       />
     </Box>
   );

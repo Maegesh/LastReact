@@ -2,17 +2,21 @@ import { useState, useEffect } from 'react';
 import { 
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip, IconButton, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Button, TextField, MenuItem, Alert
+  DialogContent, DialogActions, Button, TextField, MenuItem
 } from '@mui/material';
-import { CheckCircle, Cancel, Schedule, CheckCircleOutline, Refresh } from '@mui/icons-material';
+import { CheckCircle, Cancel, CheckCircleOutline } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { appointmentAPI } from '../../api/appointment.api';
-import { bloodBankAPI } from '../../api/bloodBank.api';
 import { donorAPI } from '../../api/donor.api';
+import { useCache } from '../../hooks/useCache';
+import { fetchBloodRequests, setFromOverview } from '../../store/bloodRequestSlice';
+import { fetchBloodBanks } from '../../store/bloodBankSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { BloodRequest } from '../../types/BloodRequest';
-import type { BloodBank } from '../../types/BloodBank';
 import type { DonorProfile } from '../../types/DonorProfile';
 import Loader from '../../components/Loader';
+import { toast } from 'react-toastify';
+import '../../styles/common.css';
 
 interface BloodRequestListProps {
   showActions?: boolean;
@@ -42,12 +46,15 @@ export default function BloodRequestList({
   filterByBloodGroup, 
   filterByStatus 
 }: BloodRequestListProps) {
+  const dispatch = useAppDispatch();
+  const { overview } = useAppSelector(state => state.donations);
+  const { data: allBloodRequests, loading, loadData } = useCache('bloodRequests', fetchBloodRequests);
+  const { data: bloodBanks, loadData: loadBloodBanks } = useCache('bloodBanks', fetchBloodBanks);
   const [bloodRequests, setBloodRequests] = useState<BloodRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [appointmentDialog, setAppointmentDialog] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<BloodRequest | null>(null);
-  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
-  const [donors, setDonors] = useState<DonorProfile[]>([]);
+
+
   const [appointmentForm, setAppointmentForm] = useState({
     donorId: '',
     bloodBankId: '',
@@ -61,41 +68,45 @@ export default function BloodRequestList({
   }, [filterByBloodGroup, filterByStatus]);
 
   const loadBloodRequests = async () => {
-    try {
-      setLoading(true);
-      let response;
-      
-      // Check user role from localStorage
-      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const userRole = currentUser.role;
-      
-      if (filterByBloodGroup) {
-        response = await bloodRequestAPI.getByBloodGroup(filterByBloodGroup);
-      } else if (userRole === 0) {
-        // Admin can see all requests
-        response = await bloodRequestAPI.getAll();
-      } else {
-        // For donors, show empty array or use a different approach
-        setBloodRequests([]);
-        return;
-      }
-      
-      let requests = response.data || [];
-      
-      if (filterByStatus) {
-        requests = requests.filter((req: BloodRequest) => 
-          req.status.toLowerCase() === filterByStatus.toLowerCase()
-        );
-      }
-      
-      setBloodRequests(requests);
-    } catch (error) {
-      console.error('Error loading blood requests:', error);
-      setBloodRequests([]);
-    } finally {
-      setLoading(false);
-    }
+    await loadData();
   };
+
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userRole = currentUser.role;
+    
+    let requests = [];
+    
+    if (userRole === 1 && overview?.bloodRequests) {
+      // For donors, use blood requests from overview
+      requests = overview.bloodRequests;
+      dispatch(setFromOverview(requests));
+    } else if (allBloodRequests) {
+      // For admins, use fetched blood requests
+      requests = allBloodRequests;
+    }
+    
+    if (filterByBloodGroup) {
+      requests = requests.filter((req: BloodRequest) => 
+        req.bloodGroupNeeded === filterByBloodGroup
+      );
+    }
+    
+    if (filterByStatus) {
+      requests = requests.filter((req: BloodRequest) => 
+        req.status.toLowerCase() === filterByStatus.toLowerCase()
+      );
+    }
+    
+    if (userRole === 1) {
+      const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
+      requests = requests.filter((req: BloodRequest) => 
+        !donorResponses[`${currentUser.id}_${req.id}`]
+      );
+    }
+    
+    setBloodRequests(requests);
+  }, [allBloodRequests, overview?.bloodRequests, filterByBloodGroup, filterByStatus, dispatch]);
 
   const handleAction = async (id: number, action: 'accept' | 'decline') => {
     try {
@@ -103,70 +114,117 @@ export default function BloodRequestList({
       const userRole = currentUser.role;
       
       if (userRole === 1) {
-        // For donors, just show a success message for now
+        // For donors - accept/decline and create appointment if accepted
         const actionText = action === 'accept' ? 'accepted' : 'declined';
-        alert(`You have ${actionText} this blood request. The recipient will be notified.`);
-        setBloodRequests(prev => prev.filter(req => req.id !== id));
-        return;
+        
+        try {
+          const donorProfileResponse = await donorAPI.getByUserId(currentUser.id);
+          const donorId = donorProfileResponse.data.id;
+          
+          if (action === 'accept') {
+            const request = bloodRequests.find(req => req.id === id);
+            if (request) {
+              setSelectedRequest(request);
+
+              await loadBloodBanks();
+              setAppointmentDialog(true);
+              return;
+            }
+          } else {
+            // If declining, just update status
+            await bloodRequestAPI.donorResponse(id, action, donorId);
+            
+            // Storing donor response in localStorage to prevent showing again
+            const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
+            donorResponses[`${currentUser.id}_${id}`] = action;
+            localStorage.setItem('donorResponses', JSON.stringify(donorResponses));
+            
+            toast.success(`You have ${actionText} this blood request. Notifications sent.`);
+            setBloodRequests(prev => prev.filter(req => req.id !== id));
+          }
+        } catch (profileError) {
+          console.error('Error getting donor profile:', profileError);
+          toast.error('Failed to get donor profile');
+          return;
+        }
       }
-      
-      // For admins, update the request status
-      const status = action === 'accept' ? 'Approved' : 'Cancelled';
-      await bloodRequestAPI.update(id, { Status: status });
-      loadBloodRequests();
     } catch (error) {
       console.error(`Error ${action}ing request:`, error);
-      alert(`Failed to ${action} request`);
+      toast.error(`Failed to ${action} request`);
     }
   };
   
-  const handleCreateAppointment = async (request: BloodRequest) => {
+
+  
+  const handleMarkAsFulfilled = async (requestId: number) => {
     try {
-      setSelectedRequest(request);
-      
-      // Load blood banks and all donors, then filter by blood group
-      const [bloodBanksRes, donorsRes] = await Promise.all([
-        bloodBankAPI.getAll(),
-        donorAPI.getAll()
-      ]);
-      
-      setBloodBanks(bloodBanksRes.data || []);
-      // Filter donors by matching blood group
-      const matchingDonors = (donorsRes.data || []).filter(
-        (donor: any) => donor.bloodGroup === request.bloodGroupNeeded
-      );
-      setDonors(matchingDonors);
-      setAppointmentDialog(true);
+      await bloodRequestAPI.updateStatus(requestId, 'Fulfilled');
+      toast.success('Blood request marked as fulfilled!');
+      // Update local state immediately
+      setBloodRequests(prev => prev.map(req => 
+        req.id === requestId ? { ...req, status: 'Fulfilled' } : req
+      ));
+      // Also reload data
+      await loadBloodRequests();
     } catch (error) {
-      console.error('Error loading appointment data:', error);
-      alert('Failed to load appointment data');
+      console.error('Error marking request as fulfilled:', error);
+      toast.error('Failed to mark request as fulfilled');
+    }
+  };
+
+  const handleMarkAsCompleted = async (requestId: number) => {
+    try {
+      await bloodRequestAPI.updateStatus(requestId, 'Completed');
+      toast.success('Blood request marked as completed!');
+      // Update local state immediately
+      setBloodRequests(prev => prev.map(req => 
+        req.id === requestId ? { ...req, status: 'Completed' } : req
+      ));
+      // Also reload data
+      await loadBloodRequests();
+    } catch (error) {
+      console.error('Error marking request as completed:', error);
+      toast.error('Failed to mark request as completed');
     }
   };
   
   const handleSubmitAppointment = async () => {
     try {
-      if (!appointmentForm.donorId || !appointmentForm.bloodBankId || !appointmentForm.appointmentDate || !appointmentForm.appointmentTime) {
-        alert('Please fill all required fields');
+      if (!appointmentForm.bloodBankId || !appointmentForm.appointmentDate || !appointmentForm.appointmentTime) {
+        toast.warning('Please fill all required fields');
         return;
       }
       
-      // Combine date and time
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const donorProfileResponse = await donorAPI.getByUserId(currentUser.id);
+      const donorId = donorProfileResponse.data.id;
+      
       const appointmentDateTime = `${appointmentForm.appointmentDate}T${appointmentForm.appointmentTime}`;
       
+      // Create appointment with current donor
       await appointmentAPI.create({
-        donorId: parseInt(appointmentForm.donorId),
+        donorId: donorId,
         bloodBankId: parseInt(appointmentForm.bloodBankId),
         appointmentDate: appointmentDateTime,
-        remarks: appointmentForm.remarks
+        remarks: appointmentForm.remarks,
+        bloodRequestId: selectedRequest?.id || 0
       });
       
-      alert('Appointment created successfully! Notifications sent to donor and recipient.');
+      // Update blood request status to accepted
+      await bloodRequestAPI.donorResponse(selectedRequest?.id || 0, 'accept', donorId);
+      
+      // Storing donor response in localStorage to prevent showing again
+      const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
+      donorResponses[`${currentUser.id}_${selectedRequest?.id}`] = 'accept';
+      localStorage.setItem('donorResponses', JSON.stringify(donorResponses));
+      
+      toast.success('Appointment created successfully! Notifications sent to recipient and admin.');
       setAppointmentDialog(false);
       setAppointmentForm({ donorId: '', bloodBankId: '', appointmentDate: '', appointmentTime: '', remarks: '' });
-      loadBloodRequests();
+      setBloodRequests(prev => prev.filter(req => req.id !== selectedRequest?.id));
     } catch (error) {
       console.error('Error creating appointment:', error);
-      alert('Failed to create appointment');
+      toast.error('Failed to create appointment');
     }
   };
   
@@ -176,8 +234,8 @@ export default function BloodRequestList({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5" sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
+      <Box className="flex-between">
+        <Typography variant="h5" className="page-title">
           {filterByStatus ? `${filterByStatus} ` : ''}Blood Requests
         </Typography>
         <Button 
@@ -192,22 +250,22 @@ export default function BloodRequestList({
 
       <TableContainer component={Paper}>
         <Table>
-          <TableHead sx={{ bgcolor: '#e8f5e8' }}>
+          <TableHead className="table-header-green">
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Recipient Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Hospital</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Blood Group</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Quantity</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Request Date</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              {showActions && <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>}
+              <TableCell className="table-header-cell">ID</TableCell>
+              <TableCell className="table-header-cell">Recipient Name</TableCell>
+              <TableCell className="table-header-cell">Hospital</TableCell>
+              <TableCell className="table-header-cell">Blood Group</TableCell>
+              <TableCell className="table-header-cell">Quantity</TableCell>
+              <TableCell className="table-header-cell">Request Date</TableCell>
+              <TableCell className="table-header-cell">Status</TableCell>
+              {showActions && <TableCell className="table-header-cell">Actions</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
             {bloodRequests.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={showActions ? 8 : 7} sx={{ textAlign: 'center', py: 3 }}>
+                <TableCell colSpan={showActions ? 8 : 7} className="table-empty-cell">
                   No requests found
                 </TableCell>
               </TableRow>
@@ -215,8 +273,8 @@ export default function BloodRequestList({
               bloodRequests.map((request) => (
                 <TableRow key={request.id} hover>
                   <TableCell>{request.id}</TableCell>
-                  <TableCell>{request.recipientName || `Recipient ${request.recipientId}`}</TableCell>
-                  <TableCell>{request.hospitalName || 'Not specified'}</TableCell>
+                  <TableCell>{request.recipientName || request.recipient?.user?.firstName ? (request.recipientName || `${request.recipient?.user?.firstName} ${request.recipient?.user?.lastName}`) : `Recipient ${request.recipientId}`}</TableCell>
+                  <TableCell>{request.hospitalName || request.recipient?.hospitalName || 'Not specified'}</TableCell>
                   <TableCell>
                     <Chip 
                       label={request.bloodGroupNeeded} 
@@ -236,40 +294,73 @@ export default function BloodRequestList({
                   </TableCell>
                   {showActions && (
                     <TableCell>
-                      {request.status === 'Pending' ? (
-                        <>
-                          <IconButton 
-                            color="success" 
-                            size="small" 
-                            sx={{ mr: 1 }}
-                            onClick={() => handleAction(request.id, 'accept')}
-                            title="Accept Request"
-                          >
-                            <CheckCircle />
-                          </IconButton>
-                          <IconButton 
-                            color="error" 
-                            size="small"
-                            onClick={() => handleAction(request.id, 'decline')}
-                            title="Decline Request"
-                          >
-                            <Cancel />
-                          </IconButton>
-                        </>
-                      ) : request.status === 'Approved' ? (
-                        <IconButton 
-                          color="primary" 
-                          size="small"
-                          onClick={() => handleCreateAppointment(request)}
-                          title="Create Appointment"
-                        >
-                          <Schedule />
-                        </IconButton>
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          {request.status}
-                        </Typography>
-                      )}
+                      {(() => {
+                        const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                        const userRole = currentUser.role;
+                        
+                        if (userRole === 1) { // Donor
+                          if (request.status === 'Pending') {
+                            return (
+                              <>
+                                <IconButton 
+                                  color="success" 
+                                  size="small" 
+                                  className="mr-1"
+                                  onClick={() => handleAction(request.id, 'accept')}
+                                  title="Accept & Create Appointment"
+                                >
+                                  <CheckCircle />
+                                </IconButton>
+                                <IconButton 
+                                  color="error" 
+                                  size="small"
+                                  onClick={() => handleAction(request.id, 'decline')}
+                                  title="Decline Request"
+                                >
+                                  <Cancel />
+                                </IconButton>
+                              </>
+                            );
+                          }
+                        } else if (userRole === 2) { // Recipient
+                          if (request.status === 'Accepted') {
+                            return (
+                              <IconButton 
+                                color="primary" 
+                                size="small"
+                                onClick={() => handleMarkAsCompleted(request.id)}
+                                title="Mark as Completed"
+                              >
+                                <CheckCircleOutline />
+                              </IconButton>
+                            );
+                          }
+                        } else if (userRole === 0) { // Admin
+                          if (request.status === 'Completed') {
+                            return (
+                              <IconButton 
+                                color="success" 
+                                size="small"
+                                onClick={() => handleMarkAsFulfilled(request.id)}
+                                title="Mark as Fulfilled"
+                              >
+                                <CheckCircleOutline />
+                              </IconButton>
+                            );
+                          }
+                          return (
+                            <Typography variant="body2" color="text.secondary">
+                              {request.status === 'Accepted' ? 'Appointment Scheduled' : request.status}
+                            </Typography>
+                          );
+                        }
+                        
+                        return (
+                          <Typography variant="body2" color="text.secondary">
+                            {request.status}
+                          </Typography>
+                        );
+                      })()} 
                     </TableCell>
                   )}
                 </TableRow>
@@ -281,26 +372,10 @@ export default function BloodRequestList({
       
       <Dialog open={appointmentDialog} onClose={() => setAppointmentDialog(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {appointmentForm.donorId ? 
-            `Create Appointment for Selected Donor` : 
-            `Create Appointment for ${selectedRequest?.bloodGroupNeeded} Request`
-          }
+          Create Appointment for {selectedRequest?.bloodGroupNeeded} Blood Request
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-            <TextField
-              select
-              label="Select Donor"
-              value={appointmentForm.donorId}
-              onChange={(e) => setAppointmentForm(prev => ({ ...prev, donorId: e.target.value }))}
-              required
-            >
-              {donors.map((donor) => (
-                <MenuItem key={donor.id} value={donor.id}>
-                  {donor.userName} - {donor.bloodGroup}
-                </MenuItem>
-              ))}
-            </TextField>
+          <Box className="form-container" sx={{ mt: 1 }}>
             
             <TextField
               select
@@ -309,7 +384,7 @@ export default function BloodRequestList({
               onChange={(e) => setAppointmentForm(prev => ({ ...prev, bloodBankId: e.target.value }))}
               required
             >
-              {bloodBanks.map((bank) => (
+              {(bloodBanks || []).map((bank: any) => (
                 <MenuItem key={bank.id} value={bank.id}>
                   {bank.name} - {bank.location}
                 </MenuItem>
@@ -346,7 +421,7 @@ export default function BloodRequestList({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAppointmentDialog(false)}>Cancel</Button>
-          <Button onClick={handleSubmitAppointment} variant="contained" sx={{ bgcolor: '#d32f2f' }}>
+          <Button onClick={handleSubmitAppointment} variant="contained" className="primary-button">
             Create Appointment
           </Button>
         </DialogActions>

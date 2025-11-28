@@ -4,8 +4,9 @@ import {
   TableHead, TableRow, Paper, Chip, Button, IconButton
 } from '@mui/material';
 import { Refresh, CheckCircle } from '@mui/icons-material';
+import { useCache } from '../../hooks/useCache';
+import { fetchAppointments } from '../../store/appointmentSlice';
 import { appointmentAPI } from '../../api/appointment.api';
-import type { Appointment } from '../../types/Appointment';
 import Loader from '../../components/Loader';
 
 const getStatusColor = (status: string) => {
@@ -18,31 +19,18 @@ const getStatusColor = (status: string) => {
 };
 
 export default function AppointmentList() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: appointments, loading, loadData } = useCache('appointments', fetchAppointments);
 
   useEffect(() => {
-    loadAppointments();
+    loadData();
   }, []);
-
-  const loadAppointments = async () => {
-    try {
-      setLoading(true);
-      const response = await appointmentAPI.getAll();
-      setAppointments(response.data || []);
-    } catch (error) {
-      console.error('Error loading appointments:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <Loader message="Loading appointments..." />;
 
   const handleMarkComplete = async (id: number) => {
     try {
-      await appointmentAPI.update(id, { status: 'Completed' });
-      loadAppointments();
+      await appointmentAPI.updateStatus(id, 'Completed');
+      loadData(true);
     } catch (error) {
       console.error('Error updating appointment:', error);
     }
@@ -54,7 +42,7 @@ export default function AppointmentList() {
         <Typography variant="h5" sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
           Appointments Management
         </Typography>
-        <IconButton onClick={loadAppointments} color="primary">
+        <IconButton onClick={() => loadData()} color="primary">
           <Refresh />
         </IconButton>
       </Box>
@@ -73,31 +61,39 @@ export default function AppointmentList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {appointments.map((appointment) => (
-              <TableRow key={appointment.id} hover>
-                <TableCell>{appointment.id}</TableCell>
-                <TableCell>{appointment.donorName || `Donor ${appointment.donorId}`}</TableCell>
-                <TableCell>{appointment.bloodBankName || `Blood Bank ${appointment.bloodBankId}`}</TableCell>
-                <TableCell>{new Date(appointment.appointmentDate).toLocaleDateString()}</TableCell>
-                <TableCell>{appointment.remarks || 'None'}</TableCell>
-                <TableCell>
-                  <Chip label={appointment.status} color={getStatusColor(appointment.status)} />
-                </TableCell>
-                <TableCell>
-                  {appointment.status === 'Scheduled' && (
-                    <Button
-                      variant="contained"
-                      color="success"
-                      size="small"
-                      startIcon={<CheckCircle />}
-                      onClick={() => handleMarkComplete(appointment.id)}
-                    >
-                      Mark Complete
-                    </Button>
-                  )}
+            {(!appointments || appointments.length === 0) ? (
+              <TableRow>
+                <TableCell colSpan={7} sx={{ textAlign: 'center', py: 3 }}>
+                  No appointments found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              (appointments || []).map((appointment: any) => (
+                <TableRow key={appointment.id} hover>
+                  <TableCell>{appointment.id}</TableCell>
+                  <TableCell>{appointment.donorName || `Donor ${appointment.donorId}`}</TableCell>
+                  <TableCell>{appointment.bloodBankName || `Blood Bank ${appointment.bloodBankId}`}</TableCell>
+                  <TableCell>{new Date(appointment.appointmentDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{appointment.remarks || 'None'}</TableCell>
+                  <TableCell>
+                    <Chip label={appointment.status} color={getStatusColor(appointment.status)} />
+                  </TableCell>
+                  <TableCell>
+                    {appointment.status === 'Scheduled' && (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        startIcon={<CheckCircle />}
+                        onClick={() => handleMarkComplete(appointment.id)}
+                      >
+                        Mark Complete
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

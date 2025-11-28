@@ -7,5 +7,6 @@ export const appointmentAPI = {
   getUpcoming: () => http.get('/Appointment/upcoming'),
   create: (data: any) => http.post('/Appointment', data),
   update: (id: number, data: any) => http.put(`/Appointment/${id}`, data),
+  updateStatus: (id: number, status: string) => http.post('/Appointment/update-status', { id, status }),
   cancel: (id: number) => http.put(`/Appointment/${id}/cancel`)
 };

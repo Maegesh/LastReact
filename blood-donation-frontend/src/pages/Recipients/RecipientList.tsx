@@ -3,8 +3,8 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip 
 } from '@mui/material';
-import { recipientAPI } from '../../api/recipient.api';
-import type { RecipientProfile } from '../../types/RecipientProfile';
+import { useCache } from '../../hooks/useCache';
+import { fetchRecipients } from '../../store/recipientSlice';
 import Loader from '../../components/Loader';
 
 const getBloodGroupColor = (bloodGroup: string) => {
@@ -16,24 +16,11 @@ const getBloodGroupColor = (bloodGroup: string) => {
 };
 
 export default function RecipientList() {
-  const [recipients, setRecipients] = useState<RecipientProfile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: recipients, loading, loadData } = useCache('recipients', fetchRecipients);
 
   useEffect(() => {
-    loadRecipients();
+    loadData();
   }, []);
-
-  const loadRecipients = async () => {
-    try {
-      setLoading(true);
-      const response = await recipientAPI.getAll();
-      setRecipients(response.data || []);
-    } catch (error) {
-      console.error('Error loading recipients:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <Loader message="Loading recipients..." />;
 
@@ -56,14 +43,14 @@ export default function RecipientList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {recipients.length === 0 ? (
+            {(!recipients || recipients.length === 0) ? (
               <TableRow>
                 <TableCell colSpan={6} sx={{ textAlign: 'center', py: 3 }}>
                   No recipients found
                 </TableCell>
               </TableRow>
             ) : (
-              recipients.map((recipient) => (
+              (recipients || []).map((recipient: any) => (
                 <TableRow key={recipient.id} hover>
                   <TableCell>{recipient.id}</TableCell>
                   <TableCell>{recipient.userId}</TableCell>
