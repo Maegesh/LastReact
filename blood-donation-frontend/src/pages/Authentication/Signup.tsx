@@ -67,61 +67,86 @@ export default function Signup() {
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const genders = ['Male', 'Female', 'Other'];
 
+  const validateField = (field: string, value: any) => {
+    const error = getFieldError(field, value);
+    
+    setValidationErrors(prev => {
+      if (error) {
+        return { ...prev, [field]: error };
+      } else {
+        const { [field]: removed, ...rest } = prev;
+        return rest;
+      }
+    });
+  };
+
   const validateDonorForm = () => {
+    const fields = ['firstName', 'lastName', 'email', 'password', 'contactNumber', 'bloodGroup', 'age', 'gender', 'lastDonationDate'];
     const errors: {[key: string]: string} = {};
     
-    if (!donorData.firstName.trim()) errors.firstName = 'First name is required';
-    else if (donorData.firstName.length < 2) errors.firstName = 'First name must be at least 2 characters';
-    
-    if (!donorData.lastName.trim()) errors.lastName = 'Last name is required';
-    else if (donorData.lastName.length < 2) errors.lastName = 'Last name must be at least 2 characters';
-    
-    if (!donorData.email.trim()) errors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorData.email)) errors.email = 'Invalid email format';
-    
-    if (!donorData.password) errors.password = 'Password is required';
-    else if (donorData.password.length < 6) errors.password = 'Password must be at least 6 characters';
-    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(donorData.password)) errors.password = 'Password must contain uppercase, lowercase, and number';
-    
-    if (!donorData.contactNumber.trim()) errors.contactNumber = 'Contact number is required';
-    else if (!/^\d{10,15}$/.test(donorData.contactNumber)) errors.contactNumber = 'Contact number must be 10-15 digits';
-    
-    if (!donorData.bloodGroup) errors.bloodGroup = 'Blood group is required';
-    
-    if (!donorData.age || donorData.age < 18 || donorData.age > 65) errors.age = 'Age must be between 18 and 65';
-    
-    if (!donorData.gender) errors.gender = 'Gender is required';
+    fields.forEach(field => {
+      const value = donorData[field as keyof DonorSignupData];
+      const error = getFieldError(field, value);
+      if (error) errors[field] = error;
+    });
     
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const validateRecipientForm = () => {
+    const fields = ['firstName', 'lastName', 'email', 'password', 'hospitalName', 'requiredBloodGroup', 'contactNumber'];
     const errors: {[key: string]: string} = {};
     
-    if (!recipientData.firstName.trim()) errors.firstName = 'First name is required';
-    else if (recipientData.firstName.length < 2) errors.firstName = 'First name must be at least 2 characters';
-    
-    if (!recipientData.lastName.trim()) errors.lastName = 'Last name is required';
-    else if (recipientData.lastName.length < 2) errors.lastName = 'Last name must be at least 2 characters';
-    
-    if (!recipientData.email.trim()) errors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientData.email)) errors.email = 'Invalid email format';
-    
-    if (!recipientData.password) errors.password = 'Password is required';
-    else if (recipientData.password.length < 6) errors.password = 'Password must be at least 6 characters';
-    else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(recipientData.password)) errors.password = 'Password must contain uppercase, lowercase, and number';
-    
-    if (!recipientData.hospitalName.trim()) errors.hospitalName = 'Hospital name is required';
-    else if (recipientData.hospitalName.length < 3) errors.hospitalName = 'Hospital name must be at least 3 characters';
-    
-    if (!recipientData.requiredBloodGroup) errors.requiredBloodGroup = 'Required blood group is required';
-    
-    if (!recipientData.contactNumber.trim()) errors.contactNumber = 'Contact number is required';
-    else if (!/^\d{10,15}$/.test(recipientData.contactNumber)) errors.contactNumber = 'Contact number must be 10-15 digits';
+    fields.forEach(field => {
+      const value = recipientData[field as keyof RecipientSignupData];
+      const error = getFieldError(field, value);
+      if (error) errors[field] = error;
+    });
     
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  const getFieldError = (field: string, value: any): string => {
+    switch (field) {
+      case 'firstName':
+      case 'lastName':
+        if (!value?.trim()) return `${field === 'firstName' ? 'First' : 'Last'} name is required`;
+        if (value.length < 2) return `${field === 'firstName' ? 'First' : 'Last'} name must be at least 2 characters`;
+        break;
+      case 'email':
+        if (!value?.trim()) return 'Email is required';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
+        break;
+      case 'password':
+        if (!value) return 'Password is required';
+        if (value.length < 6) return 'Password must be at least 6 characters';
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) return 'Password must contain uppercase, lowercase, and number';
+        break;
+      case 'contactNumber':
+        if (!value?.trim()) return 'Contact number is required';
+        if (!/^\d{10,15}$/.test(value)) return 'Contact number must be 10-15 digits';
+        break;
+      case 'bloodGroup':
+      case 'requiredBloodGroup':
+        if (!value) return 'Blood group is required';
+        break;
+      case 'age':
+        if (!value || value < 18 || value > 65) return 'Age must be between 18 and 65';
+        break;
+      case 'gender':
+        if (!value) return 'Gender is required';
+        break;
+      case 'hospitalName':
+        if (!value?.trim()) return 'Hospital name is required';
+        if (value.length < 3) return 'Hospital name must be at least 3 characters';
+        break;
+      case 'lastDonationDate':
+        if (value && new Date(value) > new Date()) return 'Last donation date cannot be in the future';
+        break;
+    }
+    return '';
   };
 
   const handleDonorSignup = async (e: React.FormEvent) => {
@@ -187,7 +212,7 @@ export default function Signup() {
     <Box sx={{
       minHeight: '100vh',
       width: '100vw',
-      background: 'radial-gradient(circle at center, #ff6b6b 0%, #d32f2f 50%, #8b0000 100%)',
+      background: 'radial-gradient(circle at center, #e93535ff 0%, #d32f2f 50%, #620202ff 100%)',
       display: 'flex',
       position: 'relative',
       overflow: 'hidden'
@@ -399,7 +424,10 @@ export default function Signup() {
                     <TextField
                       label="First Name"
                       value={donorData.firstName}
-                      onChange={(e) => setDonorData({...donorData, firstName: e.target.value})}
+                      onChange={(e) => {
+                        setDonorData({...donorData, firstName: e.target.value});
+                        validateField('firstName', e.target.value);
+                      }}
                       required
                       fullWidth
                       error={!!validationErrors.firstName}
@@ -408,7 +436,10 @@ export default function Signup() {
                     <TextField
                       label="Last Name"
                       value={donorData.lastName}
-                      onChange={(e) => setDonorData({...donorData, lastName: e.target.value})}
+                      onChange={(e) => {
+                        setDonorData({...donorData, lastName: e.target.value});
+                        validateField('lastName', e.target.value);
+                      }}
                       required
                       fullWidth
                       error={!!validationErrors.lastName}
@@ -420,7 +451,10 @@ export default function Signup() {
                     label="Email Address"
                     type="email"
                     value={donorData.email}
-                    onChange={(e) => setDonorData({...donorData, email: e.target.value})}
+                    onChange={(e) => {
+                      setDonorData({...donorData, email: e.target.value});
+                      validateField('email', e.target.value);
+                    }}
                     required
                     fullWidth
                     sx={{ mb: 2 }}
@@ -432,7 +466,10 @@ export default function Signup() {
                     label="Password"
                     type="password"
                     value={donorData.password}
-                    onChange={(e) => setDonorData({...donorData, password: e.target.value})}
+                    onChange={(e) => {
+                      setDonorData({...donorData, password: e.target.value});
+                      validateField('password', e.target.value);
+                    }}
                     required
                     fullWidth
                     sx={{ mb: 2 }}
@@ -444,17 +481,23 @@ export default function Signup() {
                     <TextField
                       label="Contact Number"
                       value={donorData.contactNumber}
-                      onChange={(e) => setDonorData({...donorData, contactNumber: e.target.value})}
+                      onChange={(e) => {
+                        setDonorData({...donorData, contactNumber: e.target.value});
+                        validateField('contactNumber', e.target.value);
+                      }}
                       required
                       fullWidth
                       error={!!validationErrors.contactNumber}
-                      helperText={validationErrors.contactNumber || '10-15 digits only'}
+                      helperText={validationErrors.contactNumber}
                     />
                     <FormControl required fullWidth error={!!validationErrors.bloodGroup}>
                       <InputLabel>Blood Group</InputLabel>
                       <Select
                         value={donorData.bloodGroup}
-                        onChange={(e) => setDonorData({...donorData, bloodGroup: e.target.value})}
+                        onChange={(e) => {
+                          setDonorData({...donorData, bloodGroup: e.target.value});
+                          validateField('bloodGroup', e.target.value);
+                        }}
                         label="Blood Group"
                       >
                         {bloodGroups.map(group => (
@@ -476,7 +519,11 @@ export default function Signup() {
                       label="Age"
                       type="number"
                       value={donorData.age}
-                      onChange={(e) => setDonorData({...donorData, age: parseInt(e.target.value)})}
+                      onChange={(e) => {
+                        const age = parseInt(e.target.value);
+                        setDonorData({...donorData, age});
+                        validateField('age', age);
+                      }}
                       required
                       fullWidth
                       inputProps={{ min: 18, max: 65 }}
@@ -487,7 +534,10 @@ export default function Signup() {
                       <InputLabel>Gender</InputLabel>
                       <Select
                         value={donorData.gender}
-                        onChange={(e) => setDonorData({...donorData, gender: e.target.value})}
+                        onChange={(e) => {
+                          setDonorData({...donorData, gender: e.target.value});
+                          validateField('gender', e.target.value);
+                        }}
                         label="Gender"
                       >
                         {genders.map(gender => (
@@ -503,13 +553,18 @@ export default function Signup() {
                   </Box>
                   
                   <TextField
-                    label="Last Donation Date (Optional)"
+                    label="Last Donation Date"
                     type="date"
                     value={donorData.lastDonationDate}
-                    onChange={(e) => setDonorData({...donorData, lastDonationDate: e.target.value})}
+                    onChange={(e) => {
+                      setDonorData({...donorData, lastDonationDate: e.target.value});
+                      validateField('lastDonationDate', e.target.value);
+                    }}
                     InputLabelProps={{ shrink: true }}
                     fullWidth
                     sx={{ mb: 3 }}
+                    error={!!validationErrors.lastDonationDate}
+                    helperText={validationErrors.lastDonationDate}
                   />
 
                   <Button
@@ -642,7 +697,7 @@ export default function Signup() {
                       required
                       fullWidth
                       error={!!validationErrors.contactNumber}
-                      helperText={validationErrors.contactNumber || '10-15 digits only'}
+                      helperText={validationErrors.contactNumber}
                     />
                   </Box>
 

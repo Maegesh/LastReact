@@ -3,47 +3,32 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Chip, IconButton, Button
 } from '@mui/material';
-import { Delete, Visibility } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { recipientAPI } from '../../api/recipient.api';
 import { notificationAPI } from '../../api/notification.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchRecipientOverview } from '../../store/recipientSlice';
 import type { BloodRequest } from '../../types/BloodRequest';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
 import '../../styles/common.css';
 
 export default function RecipientBloodRequestList() {
-  const [requests, setRequests] = useState<BloodRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-
-
+  const dispatch = useAppDispatch();
+  const { overview, loading } = useAppSelector(state => state.recipients);
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-
+  
+  const requests = overview?.bloodRequests || [];
 
   useEffect(() => {
-    loadRequests();
-  }, []);
+    if (!overview && currentUser.id) {
+      dispatch(fetchRecipientOverview(currentUser.id));
+    }
+  }, [dispatch, overview, currentUser.id]);
 
   const loadRequests = async () => {
-    if ((window as any).recipientRequestsLoading) return;
-    try {
-      (window as any).recipientRequestsLoading = true;
-      setLoading(true);
-      // First get the recipient profile to get the correct recipient ID
-      const profileResponse = await recipientAPI.getByUserId(currentUser.id);
-      const recipientProfile = profileResponse.data;
-      
-      if (recipientProfile) {
-        const response = await bloodRequestAPI.getByRecipientId(recipientProfile.id);
-        setRequests(response.data || []);
-      } else {
-        setRequests([]);
-      }
-    } catch (error) {
-      setRequests([]);
-    } finally {
-      setLoading(false);
-      (window as any).recipientRequestsLoading = false;
+    if (currentUser.id) {
+      dispatch(fetchRecipientOverview(currentUser.id));
     }
   };
 
@@ -62,18 +47,18 @@ export default function RecipientBloodRequestList() {
 
   const handleMarkCompleted = async (id: number) => {
     try {
-      await bloodRequestAPI.update(id, { status: 'Completed' });
+      await bloodRequestAPI.updateStatus(id, 'Completed');
       
       // Create notification for admin
       try {
         await notificationAPI.create({
-          userId: 1, // Admin user ID (assuming admin has ID 1)
+          userId: 1,
           message: `Blood request #${id} has been marked as completed by recipient and needs admin fulfillment.`,
           type: 'BloodRequest',
           isRead: false
         });
       } catch (notificationError) {
-        // Admin notification failed - continue with success flow
+        
       }
       
       loadRequests();
@@ -133,7 +118,7 @@ export default function RecipientBloodRequestList() {
                 </TableCell>
               </TableRow>
             ) : (
-              requests.map((request) => (
+              requests.map((request: any) => (
                 <TableRow key={request.id} hover>
                   <TableCell>#{request.id}</TableCell>
                   <TableCell>

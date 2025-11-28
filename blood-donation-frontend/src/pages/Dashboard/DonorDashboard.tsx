@@ -1,119 +1,75 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Container, Typography, Paper, Avatar, IconButton, Dialog, DialogTitle,
+  Box, Container, Typography, Paper, Avatar, Dialog, DialogTitle,
   DialogContent, DialogActions, Button, TextField, FormControl, InputLabel,
   Select, MenuItem, Chip
 } from '@mui/material';
 import {
-  Bloodtype, CalendarToday, History, Inventory, Business, Person, Notifications,
-  Logout, TrendingUp, Edit, PhotoCamera
+  Bloodtype, CalendarToday, History, Inventory, Business,
+   TrendingUp, PhotoCamera
 } from '@mui/icons-material';
-import { donorAPI } from '../../api/donor.api';
-import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { appointmentAPI } from '../../api/appointment.api';
-import { donationAPI } from '../../api/donation.api';
-import { bloodBankAPI } from '../../api/bloodBank.api';
 import { tokenstore } from '../../auth/tokenstore';
 import Loader from "../../components/Loader.tsx";
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchDonorOverview } from '../../store/donationSlice';
+import { donorAPI } from '../../api/donor.api';
 
 export default function DonorDashboard() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [counts, setCounts] = useState({ pendingRequests: 0, appointments: 0, donations: 0, bloodBanks: 0 });
+  const dispatch = useAppDispatch();
+  const { overview, loading } = useAppSelector(state => state.donations);
   const [profileDialog, setProfileDialog] = useState(false);
-  const [donorProfile, setDonorProfile] = useState<any>(null);
   const [profileForm, setProfileForm] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     bloodGroup: '',
-    age: 18,
+    age: 18,  
     gender: '',
     profileImageUrl: ''
   });
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const userId = currentUser.id;
+  const stats = overview?.stats || { pendingRequests: 0, appointments: 0, donations: 0, bloodBanks: 0 };
+  const donorProfile = overview?.profile;
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      
-      if (userId) {
-        try {
-          // Fetch latest user data to get current profileImageUrl
-          const token = tokenstore.get();
-          if (token) {
-            const userResponse = await fetch(`http://localhost:5082/api/User/${userId}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (userResponse.ok) {
-              const latestUser = await userResponse.json();
-              localStorage.setItem('user', JSON.stringify(latestUser));
-            }
-          }
-          
-          const donorRes = await donorAPI.getByUserId(userId);
-          const profile = donorRes.data;
-          
-          const [bloodRequestsRes, appointmentsRes, donationsRes, bloodBanksRes] = await Promise.all([
-            bloodRequestAPI.getByBloodGroup(profile.bloodGroup).catch(() => ({ data: [] })),
-            appointmentAPI.getByDonor(profile.id).catch(() => ({ data: [] })),
-            donationAPI.getByDonor(profile.id).catch(() => ({ data: [] })),
-            bloodBankAPI.getAll().catch(() => ({ data: [] }))
-          ]);
-          
-          const pendingRequests = (bloodRequestsRes.data || []).filter((req: any) => req.status === 'Pending');
-          
-          setCounts({
-            pendingRequests: pendingRequests.length,
-            appointments: (appointmentsRes.data || []).length,
-            donations: (donationsRes.data || []).length,
-            bloodBanks: (bloodBanksRes.data || []).length
-          });
-          
-          setDonorProfile(profile);
-          
-          // Get updated user data from localStorage
-          const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
-          setProfileForm({
-            firstName: updatedUser.firstName || '',
-            lastName: updatedUser.lastName || '',
-            email: updatedUser.email || '',
-            phone: updatedUser.phone || '',
-            bloodGroup: profile.bloodGroup || '',
-            age: profile.age || 18,
-            gender: profile.gender || '',
-            profileImageUrl: updatedUser.profileImageUrl ? `http://localhost:5082${updatedUser.profileImageUrl}` : ''
-          });
-        } catch (error) {
-          console.error('Error loading donor profile:', error);
-          toast.error('Failed to load dashboard data');
-          setCounts({ pendingRequests: 0, appointments: 0, donations: 0, bloodBanks: 0 });
-        }
-      }
-    } catch (error) {
-      console.error("Error loading data:", error);
-    } finally {
-      setLoading(false);
+    if (userId) {
+      dispatch(fetchDonorOverview(userId));
     }
-  };
+  }, [userId, dispatch]);
 
-  const handleLogout = () => {
-    tokenstore.clear();
-    localStorage.removeItem('user');
-    toast.info('Logged out successfully');
-    navigate('/login');
-  };
+  useEffect(() => {
+    if (overview?.user) {
+      // Only store essential user data to avoid localStorage quota issues
+      const essentialUserData = {
+        id: overview.user.id,
+        firstName: overview.user.firstName,
+        lastName: overview.user.lastName,
+        email: overview.user.email,
+        phone: overview.user.phone,
+        profileImageUrl: overview.user.profileImageUrl,
+        role: overview.user.role
+      };
+      localStorage.setItem('user', JSON.stringify(essentialUserData));
+      setProfileForm({
+        firstName: overview.user.firstName || '',
+        lastName: overview.user.lastName || '',
+        email: overview.user.email || '',
+        phone: overview.user.phone || '',
+        bloodGroup: overview.profile?.bloodGroup || '',
+        age: overview.profile?.age || 18,
+        gender: overview.profile?.gender || '',
+        profileImageUrl: overview.user.profileImageUrl ? `http://localhost:5082${overview.user.profileImageUrl}` : ''
+      });
+    }
+  }, [overview]);
 
   const handleProfileUpdate = async () => {
     try {
@@ -139,7 +95,6 @@ export default function DonorDashboard() {
         window.location.reload();
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
       toast.error('Failed to update profile');
     }
   };
@@ -148,7 +103,6 @@ export default function DonorDashboard() {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        setLoading(true);
         
         // Convert file to byte array
         const arrayBuffer = await file.arrayBuffer();
@@ -188,7 +142,6 @@ export default function DonorDashboard() {
           }));
           
           toast.success('Profile image updated successfully');
-          // Refresh the page to show the new image
           window.location.reload();
         } else {
           const errorText = await response.text();
@@ -196,11 +149,10 @@ export default function DonorDashboard() {
         }
       } catch (error: any) {
         toast.error('Error uploading image: ' + error.message);
-      } finally {
-        setLoading(false);
       }
     }
   };
+
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const genders = ['Male', 'Female', 'Other'];
@@ -208,7 +160,7 @@ export default function DonorDashboard() {
   const navigationCards = [
     { 
       title: 'Blood Requests', 
-      count: counts.pendingRequests, 
+      count: stats.pendingRequests, 
       icon: <Bloodtype />, 
       path: '/donor/requests',
       color: '#ef4444',
@@ -217,7 +169,7 @@ export default function DonorDashboard() {
     },
     { 
       title: 'My Appointments', 
-      count: counts.appointments, 
+      count: stats.appointments, 
       icon: <CalendarToday />, 
       path: '/donor/appointments',
       color: '#3b82f6',
@@ -226,7 +178,7 @@ export default function DonorDashboard() {
     },
     { 
       title: 'Donation History', 
-      count: counts.donations, 
+      count: stats.donations, 
       icon: <History />, 
       path: '/donor/donations',
       color: '#10b981',
@@ -235,7 +187,7 @@ export default function DonorDashboard() {
     },
     { 
       title: 'Blood Banks', 
-      count: counts.bloodBanks, 
+      count: stats.bloodBanks, 
       icon: <Business />, 
       path: '/donor/blood-banks',
       color: '#06b6d4',
@@ -258,7 +210,7 @@ export default function DonorDashboard() {
     <Box sx={{ 
       minHeight: '100vh', 
       width: '100vw', 
-      bgcolor: '#f8fafc',
+      bgcolor: '#f0f9ff',
       display: 'flex',
       flexDirection: 'column'
     }}>
@@ -288,15 +240,15 @@ export default function DonorDashboard() {
                   ❤️ Your Life-Saving Impact
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  {counts.donations > 0 
-                    ? `You've made ${counts.donations} donation${counts.donations > 1 ? 's' : ''} and potentially saved ${counts.donations * 3} lives!`
+                  {stats.donations > 0 
+                    ? `You've made ${stats.donations} donation${stats.donations > 1 ? 's' : ''} and potentially saved ${stats.donations * 3} lives!`
                     : 'Ready to start your life-saving journey? Check pending requests below.'
                   }
                 </Typography>
               </Box>
               <Box sx={{ textAlign: 'center' }}>
                 <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-                  {counts.donations * 3}
+                  {stats.donations * 3}
                 </Typography>
                 <Typography variant="caption">Lives Impacted</Typography>
               </Box>
@@ -327,8 +279,9 @@ export default function DonorDashboard() {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 borderRadius: 3,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                border: '1px solid #f1f5f9',
+                bgcolor: card.bgColor,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: `2px solid ${card.color}20`,
                 '&:hover': {
                   transform: 'translateY(-4px)',
                   boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
@@ -339,15 +292,16 @@ export default function DonorDashboard() {
               <Box sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Box sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: card.bgColor,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 3,
+                    bgcolor: card.color,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: `0 4px 12px ${card.color}40`
                   }}>
-                    <Box sx={{ color: card.color }}>
+                    <Box sx={{ color: 'white' }}>
                       {React.cloneElement(card.icon, { sx: { fontSize: 24 } })}
                     </Box>
                   </Box>
@@ -389,7 +343,13 @@ export default function DonorDashboard() {
           mb: 4
         }}>
           {/* Donation Process */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#f8fafc',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            border: '2px solid #e2e8f0'
+          }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#1e293b' }}>
               🩸 Donation Process Guide
             </Typography>
@@ -437,7 +397,13 @@ export default function DonorDashboard() {
           </Paper>
 
           {/* Health Tips */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f0fdf4', bgcolor: '#f0fdf4' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#f0fdf4',
+            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.1)',
+            border: '2px solid #bbf7d0'
+          }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#16a34a' }}>
               💪 Donor Health Tips
             </Typography>
@@ -471,7 +437,14 @@ export default function DonorDashboard() {
         </Box>
 
         {/* Impact Statistics & Recognition */}
-        <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9', mb: 4 }}>
+        <Paper sx={{ 
+          p: 3, 
+          borderRadius: 3, 
+          bgcolor: '#fef2f2',
+          boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
+          border: '2px solid #fecaca',
+          mb: 4
+        }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3, color: '#1e293b' }}>
             🏆 Your Donation Impact & Recognition
           </Typography>
@@ -482,19 +455,19 @@ export default function DonorDashboard() {
           }}>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#d32f2f' }}>
-                {counts.donations}
+                {stats.donations}
               </Typography>
               <Typography variant="body2" color="text.secondary">Total Donations</Typography>
               <Chip 
-                label={counts.donations >= 10 ? 'Hero Donor' : counts.donations >= 5 ? 'Regular Donor' : 'New Donor'}
-                color={counts.donations >= 10 ? 'error' : counts.donations >= 5 ? 'warning' : 'primary'}
+                label={stats.donations >= 10 ? 'Hero Donor' : stats.donations >= 5 ? 'Regular Donor' : 'New Donor'}
+                color={stats.donations >= 10 ? 'error' : stats.donations >= 5 ? 'warning' : 'primary'}
                 size="small"
                 sx={{ mt: 1 }}
               />
             </Box>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#10b981' }}>
-                {counts.donations * 3}
+                {stats.donations * 3}
               </Typography>
               <Typography variant="body2" color="text.secondary">Lives Potentially Saved</Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
@@ -503,7 +476,7 @@ export default function DonorDashboard() {
             </Box>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#3b82f6' }}>
-                {counts.appointments}
+                {stats.appointments}
               </Typography>
               <Typography variant="body2" color="text.secondary">Scheduled Appointments</Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
@@ -512,7 +485,7 @@ export default function DonorDashboard() {
             </Box>
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#f59e0b' }}>
-                {counts.pendingRequests}
+                {stats.pendingRequests}
               </Typography>
               <Typography variant="body2" color="text.secondary">Pending Requests</Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>

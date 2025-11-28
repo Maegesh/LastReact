@@ -3,8 +3,8 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip 
 } from '@mui/material';
-import { donationAPI } from '../../api/donation.api';
-import type { DonationRecord } from '../../types/DonationRecord';
+import { useCache } from '../../hooks/useCache';
+import { fetchDonations } from '../../store/donationSlice';
 import Loader from '../../components/Loader';
 
 const getStatusColor = (status: string) => {
@@ -17,24 +17,11 @@ const getStatusColor = (status: string) => {
 };
 
 export default function DonationList() {
-  const [donations, setDonations] = useState<DonationRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: donations, loading, loadData } = useCache('donations', fetchDonations);
 
   useEffect(() => {
-    loadDonations();
+    loadData();
   }, []);
-
-  const loadDonations = async () => {
-    try {
-      setLoading(true);
-      const response = await donationAPI.getAll();
-      setDonations(response.data || []);
-    } catch (error) {
-      console.error('Error loading donations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <Loader message="Loading donations..." />;
 
@@ -57,20 +44,28 @@ export default function DonationList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {donations.map((donation) => (
-              <TableRow key={donation.id} hover>
-                <TableCell>{donation.id}</TableCell>
-                <TableCell>{donation.donorName || `Donor ${donation.donorId}`}</TableCell>
-                <TableCell>{donation.bloodBankName || `Blood Bank ${donation.bloodBankId}`}</TableCell>
-                <TableCell>{new Date(donation.donationDate).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <Chip label={`${donation.quantity} units`} color="primary" variant="outlined" />
-                </TableCell>
-                <TableCell>
-                  <Chip label={donation.status} color={getStatusColor(donation.status)} />
+            {(!donations || donations.length === 0) ? (
+              <TableRow>
+                <TableCell colSpan={6} sx={{ textAlign: 'center', py: 3 }}>
+                  No donations found
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              (donations || []).map((donation: any) => (
+                <TableRow key={donation.id} hover>
+                  <TableCell>{donation.id}</TableCell>
+                  <TableCell>{donation.donorName || `Donor ${donation.donorId}`}</TableCell>
+                  <TableCell>{donation.bloodBankName || `Blood Bank ${donation.bloodBankId}`}</TableCell>
+                  <TableCell>{new Date(donation.donationDate).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <Chip label={`${donation.quantity} units`} color="primary" variant="outlined" />
+                  </TableCell>
+                  <TableCell>
+                    <Chip label={donation.status} color={getStatusColor(donation.status)} />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

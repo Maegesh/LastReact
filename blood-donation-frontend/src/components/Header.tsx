@@ -8,6 +8,8 @@ import {
   Bloodtype, Notifications, Logout, Person, Dashboard
 } from '@mui/icons-material';
 import { tokenstore } from '../auth/tokenstore';
+import { useAppDispatch } from '../store/hooks';
+import { clearDonorData } from '../store/donationSlice';
 
 interface HeaderProps {
   userType: 'donor' | 'recipient';
@@ -17,6 +19,7 @@ interface HeaderProps {
 
 export default function Header({ userType, notificationCount = 0, onProfileClick }: HeaderProps) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -29,8 +32,10 @@ export default function Header({ userType, notificationCount = 0, onProfileClick
   };
 
   const handleLogout = () => {
+    // Clear all auth-related data
     tokenstore.clear();
-    localStorage.removeItem('user');
+    localStorage.clear();
+    dispatch(clearDonorData());
     navigate('/login');
   };
 
@@ -47,48 +52,43 @@ export default function Header({ userType, notificationCount = 0, onProfileClick
     <AppBar 
       position="sticky" 
       sx={{ 
-        bgcolor: 'white',
-        color: '#1e293b',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        borderBottom: '1px solid #e2e8f0'
+        bgcolor: '#dc2626',
+        color: 'white',
+        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.2)',
+        borderBottom: '3px solid #b91c1c'
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
         {/* Logo and Brand */}
         <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleDashboard}>
           <Box sx={{
-            width: 40,
-            height: 40,
+            width: 45,
+            height: 45,
             borderRadius: '50% 50% 50% 0',
-            bgcolor: '#d32f2f',
+            bgcolor: 'white',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             mr: 2,
             transform: 'rotate(-45deg)'
           }}>
-            <Bloodtype sx={{ color: 'white', transform: 'rotate(45deg)', fontSize: 20 }} />
+            <Bloodtype sx={{ color: '#dc2626', transform: 'rotate(45deg)', fontSize: 22 }} />
           </Box>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#d32f2f' }}>
-              BloodConnect
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'white' }}>
+              BloodConnect {userType === 'donor' ? 'Donor' : 'Recipient'}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {userType === 'donor' ? 'Donor Portal' : 'Recipient Portal'}
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
+              Blood Donation Management System
             </Typography>
           </Box>
         </Box>
 
         {/* User Info and Actions */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Chip 
-            label={userType === 'donor' ? 'Donor' : 'Recipient'}
-            color="primary"
-            size="small"
-            sx={{ bgcolor: '#e3f2fd', color: '#1976d2' }}
-          />
+
           
-          <IconButton onClick={handleNotifications} sx={{ color: '#64748b' }}>
+          <IconButton onClick={handleNotifications} sx={{ color: 'white' }}>
             <Badge badgeContent={notificationCount} color="error">
               <Notifications />
             </Badge>
@@ -96,20 +96,22 @@ export default function Header({ userType, notificationCount = 0, onProfileClick
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Box sx={{ textAlign: 'right', display: { xs: 'none', sm: 'block' } }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'white' }}>
                 {currentUser.firstName || userType} {currentUser.lastName || ''}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {currentUser.email}
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                {userType === 'donor' ? 'Blood Donor' : 'Blood Recipient'}
               </Typography>
             </Box>
             
             <Avatar 
               sx={{ 
-                bgcolor: '#d32f2f', 
+                bgcolor: 'white', 
+                color: '#dc2626',
                 width: 40, 
                 height: 40,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontWeight: 'bold'
               }}
               src={currentUser.profileImageUrl ? `http://localhost:5082${currentUser.profileImageUrl}` : ''}
               onClick={handleProfileMenuOpen}

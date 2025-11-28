@@ -21,4 +21,23 @@ namespace BloodDonationSystem.Dtos
         public bool IsRead { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+
+    public class NotificationLogWithUserDto
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string Message { get; set; } = null!;
+        public bool IsRead { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public UserDto? User { get; set; }
+    }
+
+    public class UserDto
+    {
+        public int Id { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string Username { get; set; } = null!;
+        public string Email { get; set; } = null!;
+    }
 }

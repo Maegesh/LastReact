@@ -3,10 +3,9 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip 
 } from '@mui/material';
-import { donorAPI } from '../../api/donor.api';
-import { userAPI } from '../../api/user.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchDonors } from '../../store/donorSlice';
 import type { DonorProfile } from '../../types/DonorProfile';
-import type { User } from '../../types/User';
 import Loader from '../../components/Loader';
 
 const getBloodGroupColor = (bloodGroup: string) => {
@@ -17,46 +16,33 @@ const getBloodGroupColor = (bloodGroup: string) => {
   return colors[bloodGroup] || '#757575';
 };
 
-interface DonorWithUser extends DonorProfile {
-  user?: User;
-}
-
 export default function DonorList() {
-  const [donors, setDonors] = useState<DonorWithUser[]>([]);
+  const [donors, setDonors] = useState<DonorProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { data: donorsData, loading: donorsLoading, lastFetched } = useAppSelector(state => state.donors);
 
   useEffect(() => {
     loadDonors();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (donorsData) {
+      setDonors(donorsData);
+    }
+    setLoading(donorsLoading);
+  }, [donorsData, donorsLoading]);
 
   const loadDonors = async () => {
-    if ((window as any).donorsLoading) return;
+    const fiveMinutes = 5 * 60 * 1000;
+    const shouldRefetch = !donorsData || !lastFetched || (Date.now() - lastFetched > fiveMinutes);
     
-    try {
-      (window as any).donorsLoading = true;
-      setLoading(true);
-      const response = await donorAPI.getAll();
-      const donorProfiles = response.data || [];
-      
-      // Fetch user details for each donor
-      const donorsWithUsers = await Promise.all(
-        donorProfiles.map(async (donor: DonorProfile) => {
-          try {
-            const userResponse = await userAPI.getById(donor.userId);
-            return { ...donor, user: userResponse.data };
-          } catch (error) {
-            console.error(`Error loading user ${donor.userId}:`, error);
-            return donor;
-          }
-        })
-      );
-      
-      setDonors(donorsWithUsers);
-    } catch (error) {
-      console.error('Error loading donors:', error);
-    } finally {
-      setLoading(false);
-      (window as any).donorsLoading = false;
+    if (shouldRefetch) {
+      try {
+        await dispatch(fetchDonors()).unwrap();
+      } catch (error) {
+        console.error('Error loading donors:', error);
+      }
     }
   };
 
@@ -93,7 +79,7 @@ export default function DonorList() {
                 <TableRow key={donor.id} hover>
                   <TableCell>{donor.id}</TableCell>
                   <TableCell>
-                    {donor.user ? `${donor.user.firstName || ''} ${donor.user.lastName || ''}`.trim() || donor.user.username : `User ${donor.userId}`}
+                    {donor.userName || `User ${donor.userId}`}
                   </TableCell>
                   <TableCell>
                     <Chip 

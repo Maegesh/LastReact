@@ -19,6 +19,12 @@ namespace BloodDonationSystem.Services
             return notifications.Select(MapToResponseDto);
         }
 
+        public async Task<IEnumerable<NotificationLogWithUserDto>> GetAllNotificationsWithUsers()
+        {
+            var notifications = await _notificationRepo.GetAllNotificationsWithUsers();
+            return notifications.Select(MapToWithUserDto);
+        }
+
         public async Task<IEnumerable<NotificationLogResponseDto>> GetNotificationsByUserId(int userId)
         {
             var notifications = await _notificationRepo.GetNotificationsByUserId(userId);
@@ -69,6 +75,26 @@ namespace BloodDonationSystem.Services
                 Message = notification.Message,
                 IsRead = notification.IsRead,
                 CreatedAt = notification.CreatedAt
+            };
+        }
+
+        private NotificationLogWithUserDto MapToWithUserDto(NotificationLog notification)
+        {
+            return new NotificationLogWithUserDto
+            {
+                Id = notification.Id,
+                UserId = notification.UserId,
+                Message = notification.Message,
+                IsRead = notification.IsRead,
+                CreatedAt = notification.CreatedAt,
+                User = notification.User != null ? new UserDto
+                {
+                    Id = notification.User.Id,
+                    FirstName = notification.User.FirstName,
+                    LastName = notification.User.LastName,
+                    Username = notification.User.Username,
+                    Email = notification.User.Email
+                } : null
             };
         }
     }

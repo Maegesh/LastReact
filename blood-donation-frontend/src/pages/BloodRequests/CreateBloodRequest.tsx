@@ -8,6 +8,8 @@ import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { notificationAPI } from '../../api/notification.api';
 import { recipientAPI } from '../../api/recipient.api';
 import { bloodBankAPI } from '../../api/bloodBank.api';
+import { useAppDispatch } from '../../store/hooks';
+import { fetchNotifications } from '../../store/notificationSlice';
 import type { BloodBank } from '../../types/BloodBank';
 import '../../styles/common.css';
 
@@ -19,11 +21,10 @@ interface BloodRequestData {
   bloodGroupNeeded: string;
   quantity: number;
   urgencyLevel: string;
-  hospitalName: string;
-  medicalReason: string;
 }
 
 export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequestProps = {}) {
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -32,31 +33,10 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
   const [formData, setFormData] = useState<BloodRequestData>({
     bloodGroupNeeded: '',
     quantity: 1,
-    urgencyLevel: 'Medium',
-    hospitalName: '',
-    medicalReason: ''
+    urgencyLevel: 'Medium'
   });
 
-  useEffect(() => {
-    loadRecipientProfile();
-  }, []);
-
-  const loadRecipientProfile = async () => {
-    try {
-      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const response = await recipientAPI.getByUserId(currentUser.id);
-      const profile = response.data || response;
-      
-      if (profile) {
-        setFormData(prev => ({ 
-          ...prev, 
-          hospitalName: profile.hospitalName || ''
-        }));
-      }
-    } catch (error) {
-      // Profile loading failed - form will use empty values
-    }
-  };
+  // Remove auto-loading of recipient profile to prevent duplicate API calls
 
 
 
@@ -78,9 +58,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
         recipientId: currentUser.id,
         bloodGroupNeeded: formData.bloodGroupNeeded,
         quantity: formData.quantity,
-        urgencyLevel: formData.urgencyLevel,
-        hospitalName: formData.hospitalName,
-        medicalReason: formData.medicalReason
+        urgencyLevel: formData.urgencyLevel
       };
 
       await bloodRequestAPI.create(requestData);
@@ -93,6 +71,8 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
           type: 'BloodRequest',
           isRead: false
         });
+        // Force refresh notifications
+        dispatch(fetchNotifications());
       } catch (notificationError) {
         // Notification creation failed - continue with success flow
       }
@@ -103,9 +83,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
       setFormData({
         bloodGroupNeeded: '',
         quantity: 1,
-        urgencyLevel: 'Medium',
-        hospitalName: '',
-        medicalReason: ''
+        urgencyLevel: 'Medium'
       });
       
       onRequestCreated?.();
@@ -178,25 +156,7 @@ export default function CreateBloodRequest({ onRequestCreated }: CreateBloodRequ
                 </Select>
               </FormControl>
 
-              <TextField
-                label="Hospital Name"
-                value={formData.hospitalName}
-                onChange={(e) => handleInputChange('hospitalName', e.target.value)}
-                required
-                fullWidth
-                placeholder="Enter hospital name"
-              />
 
-              <TextField
-                label="Medical Reason"
-                value={formData.medicalReason}
-                onChange={(e) => handleInputChange('medicalReason', e.target.value)}
-                required
-                fullWidth
-                multiline
-                rows={3}
-                placeholder="Please describe the medical condition requiring blood transfusion"
-              />
 
               <Button
                 type="submit"

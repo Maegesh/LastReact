@@ -3,10 +3,9 @@ import {
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip 
 } from '@mui/material';
-import { donationAPI } from '../../api/donation.api';
-import { donorAPI } from '../../api/donor.api';
 import type { DonationRecord } from '../../types/DonationRecord';
 import Loader from '../../components/Loader';
+import { useAppSelector } from '../../store/hooks';
 
 const getStatusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -18,32 +17,8 @@ const getStatusColor = (status: string) => {
 };
 
 export default function DonorDonationList() {
-  const [donations, setDonations] = useState<DonationRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-  const userId = currentUser.id;
-
-  useEffect(() => {
-    loadDonations();
-  }, []);
-
-  const loadDonations = async () => {
-    try {
-      setLoading(true);
-      if (userId) {
-        const donorRes = await donorAPI.getByUserId(userId);
-        const profile = donorRes.data;
-        const response = await donationAPI.getByDonor(profile.id);
-        setDonations(response.data || []);
-      }
-    } catch (error) {
-      console.error('Error loading donations:', error);
-      setDonations([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { donations, loading } = useAppSelector(state => state.donations);
+  const donationList = donations || [];
 
   if (loading) return <Loader message="Loading donation history..." />;
 
@@ -65,14 +40,14 @@ export default function DonorDonationList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {donations.length === 0 ? (
+            {donationList.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} sx={{ textAlign: 'center', py: 3 }}>
                   No donations found
                 </TableCell>
               </TableRow>
             ) : (
-              donations.map((donation) => (
+              donationList.map((donation: DonationRecord) => (
                 <TableRow key={donation.id} hover>
                   <TableCell>{donation.id}</TableCell>
                   <TableCell>{donation.bloodBankId}</TableCell>

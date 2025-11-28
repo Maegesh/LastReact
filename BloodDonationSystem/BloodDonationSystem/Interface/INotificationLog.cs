@@ -5,6 +5,7 @@ namespace BloodDonationSystem.Interfaces
     public interface INotificationLog
     {
         Task<IEnumerable<NotificationLog>> GetAllNotifications();
+        Task<IEnumerable<NotificationLog>> GetAllNotificationsWithUsers();
         Task<IEnumerable<NotificationLog>> GetNotificationsByUserId(int userId);
         Task<NotificationLog?> GetNotificationById(int id);
         Task<NotificationLog> CreateNotification(NotificationLog notification);

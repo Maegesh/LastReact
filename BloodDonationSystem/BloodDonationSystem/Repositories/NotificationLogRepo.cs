@@ -22,6 +22,14 @@ namespace BloodDonationSystem.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<NotificationLog>> GetAllNotificationsWithUsers()
+        {
+            return await _context.NotificationLogs
+                .Include(n => n.User)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<NotificationLog>> GetNotificationsByUserId(int userId)
         {
             return await _context.NotificationLogs

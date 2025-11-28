@@ -12,6 +12,13 @@ export interface BloodRequest {
   contactNumber?: string;
   medicalReason?: string;
   requiredBy?: string;
+  recipient?: {
+    user?: {
+      firstName?: string;
+      lastName?: string;
+    };
+    hospitalName?: string;
+  };
 }
 
 export interface CreateBloodRequest {

@@ -45,4 +45,15 @@ namespace BloodDonationSystem.Dtos
         public string Status { get; set; } = null!;
         public string? Remarks { get; set; }
     }
+
+    public class AppointmentStatusUpdatePayload
+    {
+        [Required(ErrorMessage = "Appointment ID is required")]
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Status is required")]
+        [StringLength(50, ErrorMessage = "Status cannot exceed 50 characters")]
+        [RegularExpression("^(Scheduled|Completed|Cancelled|Pending)$", ErrorMessage = "Status must be Scheduled, Completed, Cancelled, or Pending")]
+        public string Status { get; set; } = null!;
+    }
 }

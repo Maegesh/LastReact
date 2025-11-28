@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import { Edit, Person, ArrowBack, PhotoCamera } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useCache } from '../../hooks/useCache';
+import { fetchDonors } from '../../store/donorSlice';
 import { donorAPI } from '../../api/donor.api';
 import type { DonorProfile as DonorProfileType, UpdateDonorProfile } from '../../types/DonorProfile';
 import Loader from '../../components/Loader';
@@ -20,8 +22,8 @@ const getBloodGroupColor = (bloodGroup: string) => {
 
 export default function DonorProfile() {
   const navigate = useNavigate();
+  const { data: allDonors, loading, loadData } = useCache('donors', fetchDonors);
   const [donorProfile, setDonorProfile] = useState<DonorProfileType | null>(null);
-  const [loading, setLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<UpdateDonorProfile>({
     firstName: '',
@@ -37,15 +39,13 @@ export default function DonorProfile() {
   const userId = currentUser.id;
 
   useEffect(() => {
-    loadDonorProfile();
+    loadData();
   }, []);
 
-  const loadDonorProfile = async () => {
-    try {
-      setLoading(true);
-      if (userId) {
-        const response = await donorAPI.getByUserId(userId);
-        const profile = response.data;
+  useEffect(() => {
+    if (allDonors && userId) {
+      const profile = allDonors.find((donor: any) => donor.userId === userId);
+      if (profile) {
         setDonorProfile(profile);
         setEditForm({
           firstName: currentUser.firstName || '',
@@ -55,12 +55,8 @@ export default function DonorProfile() {
           gender: profile.gender
         });
       }
-    } catch (error) {
-      console.error('Error loading donor profile:', error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [allDonors, userId]);
 
   const handleProfileUpdate = async () => {
     try {
@@ -78,7 +74,7 @@ export default function DonorProfile() {
         }
         
         setEditDialogOpen(false);
-        loadDonorProfile();
+        loadData();
         
         // Reload the page to update header
         window.location.reload();

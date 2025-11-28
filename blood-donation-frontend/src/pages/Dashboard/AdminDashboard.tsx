@@ -5,12 +5,12 @@ import {
 import {
   Dashboard, People, Bloodtype, CalendarToday,
   Inventory, Notifications, Person, PersonAdd, Business,
-  Logout, Settings
+  Logout
 } from '@mui/icons-material';
-import { bloodBankAPI } from '../../api/bloodBank.api';
-import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { userAPI } from '../../api/user.api';
-import { donorAPI } from '../../api/donor.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchDashboardOverview } from '../../store/dashboardSlice';
+
+let dashboardLoading = false;
 import { useNavigate } from 'react-router-dom';
 import { tokenstore } from '../../auth/tokenstore';
 import { toast } from 'react-toastify';
@@ -31,42 +31,49 @@ import NotificationList from '../Notifications/NotificationList.tsx';
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [counts, setCounts] = useState({ bloodBanks: 0, bloodRequests: 0, users: 0, donors: 0 });
+  const [countsState, setCountsState] = useState({ 
+    bloodBanks: 0, 
+    bloodRequests: 0, 
+    users: 0, 
+    donors: 0, 
+    recipients: 0, 
+    donations: 0, 
+    appointments: 0, 
+    bloodStock: 0, 
+    notifications: 0 
+  });
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { overview, overviewLoading, lastFetched } = useAppSelector(state => state.dashboard);
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (overview?.counts) {
+      setCountsState(overview.counts);
+    }
+    setLoading(overviewLoading);
+  }, [overview, overviewLoading]);
 
   const loadData = async () => {
-    if ((window as any).adminDashboardLoading) return;
+    if (dashboardLoading || overviewLoading) return;
     
-    try {
-      (window as any).adminDashboardLoading = true;
-      setLoading(true);
-      
-      const [banksRes, requestsRes, usersRes, donorsRes] = await Promise.all([
-        bloodBankAPI.getAll().catch(() => ({ data: [] })),
-        bloodRequestAPI.getAll().catch(() => ({ data: [] })),
-        userAPI.getAll().catch(() => ({ data: [] })),
-        donorAPI.getAll().catch(() => ({ data: [] }))
-      ]);
-      
-      setCounts({
-        bloodBanks: (banksRes.data || []).length,
-        bloodRequests: (requestsRes.data || []).length,
-        users: (usersRes.data || []).length,
-        donors: (donorsRes.data || []).length
-      });
-    } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error('Failed to load dashboard data');
-      setCounts({ bloodBanks: 0, bloodRequests: 0, users: 0, donors: 0 });
-    } finally {
-      setLoading(false);
-      (window as any).adminDashboardLoading = false;
+    const fiveMinutes = 5 * 60 * 1000;
+    const shouldRefetch = !overview || !lastFetched || (Date.now() - lastFetched > fiveMinutes);
+    
+    if (shouldRefetch) {
+      dashboardLoading = true;
+      try {
+        await dispatch(fetchDashboardOverview()).unwrap();
+      } catch (error) {
+        toast.error('Failed to load dashboard data');
+      } finally {
+        dashboardLoading = false;
+      }
     }
   };
 
@@ -98,16 +105,16 @@ export default function AdminDashboard() {
     <Box sx={{ 
       minHeight: '100vh', 
       width: '100vw', 
-      bgcolor: '#f8fafc',
+      bgcolor: '#f5f7fa',
       display: 'flex',
       flexDirection: 'column'
     }}>
       {/* Modern Header */}
       <Paper sx={{ 
-        bgcolor: 'white',
+        bgcolor: '#dc2626',
         borderRadius: 0,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        borderBottom: '1px solid #e2e8f0'
+        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.2)',
+        borderBottom: '3px solid #b91c1c'
       }}>
         <Container maxWidth={false} sx={{ px: 3 }}>
           <Box sx={{ 
@@ -118,23 +125,23 @@ export default function AdminDashboard() {
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box sx={{
-                width: 40,
-                height: 40,
+                width: 45,
+                height: 45,
                 borderRadius: '50% 50% 50% 0',
-                bgcolor: '#d32f2f',
+                bgcolor: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mr: 2,
                 transform: 'rotate(-45deg)'
               }}>
-                <Bloodtype sx={{ color: 'white', transform: 'rotate(45deg)', fontSize: 20 }} />
+                <Bloodtype sx={{ color: '#dc2626', transform: 'rotate(45deg)', fontSize: 22 }} />
               </Box>
               <Box>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#1e293b' }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'white' }}>
                   BloodConnect Admin
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
                   Blood Donation Management System
                 </Typography>
               </Box>
@@ -142,17 +149,17 @@ export default function AdminDashboard() {
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'white' }}>
                   {currentUser.firstName || 'Admin'} {currentUser.lastName || ''}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
                   System Administrator
                 </Typography>
               </Box>
-              <Avatar sx={{ bgcolor: '#d32f2f', width: 40, height: 40 }}>
+              <Avatar sx={{ bgcolor: 'white', color: '#dc2626', width: 40, height: 40, fontWeight: 'bold' }}>
                 {(currentUser.firstName || 'A')[0]}
               </Avatar>
-              <IconButton onClick={handleLogout} sx={{ color: '#64748b' }}>
+              <IconButton onClick={handleLogout} sx={{ color: 'white' }}>
                 <Logout />
               </IconButton>
             </Box>
@@ -164,13 +171,13 @@ export default function AdminDashboard() {
       <Paper sx={{ 
         bgcolor: 'white',
         borderRadius: 0,
-        boxShadow: 'none',
-        borderBottom: '1px solid #e2e8f0'
+        boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+        borderBottom: '2px solid #f1f5f9'
       }}>
         <Container maxWidth={false} sx={{ px: 3 }}>
           <Tabs 
             value={activeTab} 
-            onChange={(e, newValue) => setActiveTab(newValue)}
+            onChange={(_, newValue) => setActiveTab(newValue)}
             variant="scrollable"
             scrollButtons="auto"
             sx={{
@@ -180,12 +187,13 @@ export default function AdminDashboard() {
                 fontWeight: 500,
                 fontSize: '0.9rem',
                 '&.Mui-selected': {
-                  color: '#d32f2f'
+                  color: '#dc2626',
+                  fontWeight: 'bold'
                 }
               },
               '& .MuiTabs-indicator': {
-                backgroundColor: '#d32f2f',
-                height: 3
+                backgroundColor: '#dc2626',
+                height: 4
               }
             }}
           >
@@ -208,13 +216,18 @@ export default function AdminDashboard() {
       </Paper>
 
       {/* Content Area */}
-      <Container maxWidth={false} sx={{ flex: 1, py: 3, px: 3 }}>
+      <Container maxWidth={false} sx={{ flex: 1, py: 4, px: 3 }}>
         {activeTab === 0 && (
           <DashboardComponent 
-            bloodBanksCount={counts.bloodBanks}
-            bloodRequestsCount={counts.bloodRequests}
-            usersCount={counts.users}
-            donorsCount={counts.donors}
+            bloodBanksCount={countsState.bloodBanks}
+            bloodRequestsCount={countsState.bloodRequests}
+            usersCount={countsState.users}
+            donorsCount={countsState.donors}
+            recipientsCount={countsState.recipients}
+            donationsCount={countsState.donations}
+            appointmentsCount={countsState.appointments}
+            bloodStockCount={countsState.bloodStock}
+            notificationsCount={countsState.notifications}
           />
         )}
         {activeTab === 1 && <BloodBankList showActions={true} />}

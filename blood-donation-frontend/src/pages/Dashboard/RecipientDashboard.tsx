@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box, Container, Typography, Paper, Avatar, Dialog, DialogTitle,
   DialogContent, DialogActions, Button, TextField, FormControl, InputLabel,
-  Select, MenuItem, Chip
+  Select, MenuItem, Chip, IconButton
 } from '@mui/material';
 import {
-  Bloodtype, Add, Notifications, TrendingUp, PhotoCamera
+  Bloodtype, Add, Notifications, TrendingUp, PhotoCamera, Logout
 } from '@mui/icons-material';
 import Loader from '../../components/Loader';
-import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { recipientAPI } from '../../api/recipient.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchRecipientOverview } from '../../store/recipientSlice';
 import { tokenstore } from '../../auth/tokenstore';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -18,10 +18,9 @@ import { toast } from 'react-toastify';
 
 export default function RecipientDashboard() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ totalRequests: 0, pendingRequests: 0, completedRequests: 0 });
+  const dispatch = useAppDispatch();
+  const { overview, loading } = useAppSelector(state => state.recipients);
   const [profileDialog, setProfileDialog] = useState(false);
-  const [recipientProfile, setRecipientProfile] = useState<any>(null);
   const [profileForm, setProfileForm] = useState({
     firstName: '',
     lastName: '',
@@ -32,76 +31,27 @@ export default function RecipientDashboard() {
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const userId = currentUser.id;
+  const stats = overview?.stats || { totalRequests: 0, pendingRequests: 0, completedRequests: 0 };
+  const recipientProfile = overview?.profile;
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    if ((window as any).recipientDashboardLoading) return;
-    
-    try {
-      (window as any).recipientDashboardLoading = true;
-      setLoading(true);
-      
-      if (userId) {
-        try {
-          // Fetch latest user data to get current profileImageUrl
-          const token = tokenstore.get();
-          if (token) {
-            const userResponse = await fetch(`http://localhost:5082/api/User/${userId}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (userResponse.ok) {
-              const latestUser = await userResponse.json();
-              localStorage.setItem('user', JSON.stringify(latestUser));
-              console.log('Updated user data with latest profileImageUrl:', latestUser.profileImageUrl);
-            }
-          }
-          
-          const recipientRes = await recipientAPI.getByUserId(userId);
-          const profile = recipientRes.data;
-          
-          const response = await bloodRequestAPI.getByRecipientId(profile.id);
-          const requests = response.data || [];
-          
-          setStats({
-            totalRequests: requests.length,
-            pendingRequests: requests.filter((r: any) => r.status === 'Pending').length,
-            completedRequests: requests.filter((r: any) => r.status === 'Fulfilled').length
-          });
-          
-          setRecipientProfile(profile);
-          
-          // Get updated user data from localStorage
-          const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
-          setProfileForm({
-            firstName: updatedUser.firstName || '',
-            lastName: updatedUser.lastName || '',
-            email: updatedUser.email || '',
-            phone: updatedUser.phone || '',
-            profileImageUrl: updatedUser.profileImageUrl ? `http://localhost:5082${updatedUser.profileImageUrl}` : ''
-          });
-        } catch (error) {
-          console.error('Error loading recipient profile:', error);
-          toast.error('Failed to load dashboard data');
-          setStats({ totalRequests: 0, pendingRequests: 0, completedRequests: 0 });
-        }
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-    } finally {
-      setLoading(false);
-      (window as any).recipientDashboardLoading = false;
+    if (userId) {
+      dispatch(fetchRecipientOverview(userId));
     }
-  };
+  }, [userId]);
 
-  const handleLogout = () => {
-    tokenstore.clear();
-    localStorage.removeItem('user');
-    toast.info('Logged out successfully');
-    navigate('/login');
-  };
+  useEffect(() => {
+    if (overview?.user) {
+      localStorage.setItem('user', JSON.stringify(overview.user));
+      setProfileForm({
+        firstName: overview.user.firstName || '',
+        lastName: overview.user.lastName || '',
+        email: overview.user.email || '',
+        phone: overview.user.phone || '',
+        profileImageUrl: overview.user.profileImageUrl ? `http://localhost:5082${overview.user.profileImageUrl}` : ''
+      });
+    }
+  }, [overview]);
 
   const handleProfileUpdate = async () => {
     try {
@@ -137,12 +87,10 @@ export default function RecipientDashboard() {
           window.location.reload();
         } else {
           const errorText = await userResponse.text();
-          console.error('Failed to update user profile:', userResponse.status, errorText);
           toast.error('Failed to update profile: ' + errorText);
         }
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
       toast.error('Failed to update profile');
     }
   };
@@ -151,14 +99,9 @@ export default function RecipientDashboard() {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        setLoading(true);
-        console.log('Converting file to byte array:', file.name);
-        
         // Convert file to byte array
         const arrayBuffer = await file.arrayBuffer();
         const byteArray = Array.from(new Uint8Array(arrayBuffer));
-        
-        console.log('File converted to byte array, length:', byteArray.length);
         
         const uploadData = {
           fileName: file.name,
@@ -167,10 +110,7 @@ export default function RecipientDashboard() {
           imageBytes: byteArray
         };
 
-        // Get token from tokenstore instead of localStorage
         const token = tokenstore.get();
-        console.log('Token:', token ? 'Token found' : 'No token');
-        console.log('User ID:', userId);
 
         if (!token) {
           alert('Please login again');
@@ -187,11 +127,8 @@ export default function RecipientDashboard() {
           }
         });
 
-        console.log('Response status:', response.status);
-        
         if (response.ok) {
           const updatedUser = await response.json();
-          console.log('Upload successful:', updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
           
           // Update profile form with new image URL
@@ -201,23 +138,17 @@ export default function RecipientDashboard() {
           }));
           
           toast.success('Profile image updated successfully');
-          // Refresh the page to show the new image
           window.location.reload();
         } else {
           const errorText = await response.text();
-          console.error('Upload failed:', response.status, errorText);
           toast.error('Upload failed: ' + errorText);
         }
       } catch (error: any) {
-        console.error('Error uploading image:', error);
         toast.error('Error uploading image: ' + error.message);
       } finally {
-        setLoading(false);
       }
     }
   };
-
-  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
   const navigationCards = [
     { 
@@ -261,21 +192,49 @@ export default function RecipientDashboard() {
     <Box sx={{ 
       minHeight: '100vh', 
       width: '100vw', 
-      bgcolor: '#f8fafc',
+      background: 'linear-gradient(135deg, #fcf8f8ff 0%, #e2e8f0 100%)',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      position: 'relative'
     }}>
+      {/* Background Decorative Elements */}
+      <Box sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(211, 47, 47, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
       <Header userType="recipient" notificationCount={0} onProfileClick={() => setProfileDialog(true)} />
 
       {/* Content Area */}
-      <Container maxWidth={false} sx={{ flex: 1, py: 4, px: 3 }}>
+      <Container maxWidth={false} sx={{ flex: 1, py: 4, px: 3, position: 'relative', zIndex: 1 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 1 }}>
-            Recipient Dashboard - {currentUser.firstName || 'Recipient'}
-          </Typography>
-          <Typography variant="h5" sx={{ fontWeight: 'normal', color: '#64748b', mb: 2 }}>
-            Welcome Back, {currentUser.firstName || 'Recipient'}!
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <Box sx={{
+              width: 60,
+              height: 60,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #d32f2f 0%, #f44336 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(211, 47, 47, 0.3)'
+            }}>
+              <Bloodtype sx={{ fontSize: 30, color: 'white' }} />
+            </Box>
+            <Box>
+              <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 0.5 }}>
+                Recipient Dashboard
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 'normal', color: '#64748b' }}>
+                Welcome Back, {currentUser.firstName || 'Recipient'}! 👋
+              </Typography>
+            </Box>
+          </Box>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Your blood request dashboard - manage your medical needs with confidence
           </Typography>
@@ -317,7 +276,13 @@ export default function RecipientDashboard() {
           gap: 3,
           mb: 4
         }}>
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#dbeafe',
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.1)',
+            border: '2px solid #93c5fd'
+          }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#3b82f6' }}>
@@ -326,15 +291,22 @@ export default function RecipientDashboard() {
                 <Typography variant="h6" color="text.secondary">Total Requests</Typography>
               </Box>
               <Box sx={{ 
-                width: 48, height: 48, borderRadius: 2, bgcolor: '#eff6ff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                width: 56, height: 56, borderRadius: 3, bgcolor: '#3b82f6',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
               }}>
-                <Bloodtype sx={{ color: '#3b82f6', fontSize: 24 }} />
+                <Bloodtype sx={{ color: 'white', fontSize: 28 }} />
               </Box>
             </Box>
           </Paper>
           
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#fef3c7',
+            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.1)',
+            border: '2px solid #fde68a'
+          }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#f59e0b' }}>
@@ -343,15 +315,22 @@ export default function RecipientDashboard() {
                 <Typography variant="h6" color="text.secondary">Pending</Typography>
               </Box>
               <Box sx={{ 
-                width: 48, height: 48, borderRadius: 2, bgcolor: '#fffbeb',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                width: 56, height: 56, borderRadius: 3, bgcolor: '#f59e0b',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)'
               }}>
-                <TrendingUp sx={{ color: '#f59e0b', fontSize: 24 }} />
+                <TrendingUp sx={{ color: 'white', fontSize: 28 }} />
               </Box>
             </Box>
           </Paper>
           
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#d1fae5',
+            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.1)',
+            border: '2px solid #a7f3d0'
+          }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#10b981' }}>
@@ -360,19 +339,33 @@ export default function RecipientDashboard() {
                 <Typography variant="h6" color="text.secondary">Fulfilled</Typography>
               </Box>
               <Box sx={{ 
-                width: 48, height: 48, borderRadius: 2, bgcolor: '#f0fdf4',
-                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                width: 56, height: 56, borderRadius: 3, bgcolor: '#10b981',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
               }}>
-                <Bloodtype sx={{ color: '#10b981', fontSize: 24 }} />
+                <Bloodtype sx={{ color: 'white', fontSize: 28 }} />
               </Box>
             </Box>
           </Paper>
         </Box>
 
         {/* Quick Actions Section */}
-        <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#1e293b', mb: 3 }}>
-          Quick Actions
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Box sx={{
+            width: 40,
+            height: 40,
+            borderRadius: 2,
+            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <TrendingUp sx={{ fontSize: 20, color: 'white' }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#1e293b' }}>
+            Quick Actions ⚡
+          </Typography>
+        </Box>
         
         <Box sx={{ 
           display: 'grid', 
@@ -391,8 +384,9 @@ export default function RecipientDashboard() {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 borderRadius: 3,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                border: '1px solid #f1f5f9',
+                bgcolor: card.bgColor,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: `2px solid ${card.color}20`,
                 '&:hover': {
                   transform: 'translateY(-4px)',
                   boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
@@ -403,15 +397,16 @@ export default function RecipientDashboard() {
               <Box sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Box sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 2,
-                    bgcolor: card.bgColor,
+                    width: 56,
+                    height: 56,
+                    borderRadius: 3,
+                    bgcolor: card.color,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: `0 4px 12px ${card.color}40`
                   }}>
-                    <Box sx={{ color: card.color }}>
+                    <Box sx={{ color: 'white' }}>
                       {React.cloneElement(card.icon, { sx: { fontSize: 24 } })}
                     </Box>
                   </Box>
@@ -453,7 +448,13 @@ export default function RecipientDashboard() {
           mb: 4
         }}>
           {/* Blood Request Process */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#f8fafc',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            border: '2px solid #e2e8f0'
+          }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#1e293b' }}>
               📋 How Blood Requests Work
             </Typography>
@@ -522,7 +523,13 @@ export default function RecipientDashboard() {
           </Paper>
 
           {/* Emergency Tips */}
-          <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #fef2f2', bgcolor: '#fef2f2' }}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: 3, 
+            bgcolor: '#fef2f2',
+            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
+            border: '2px solid #fecaca'
+          }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: '#dc2626' }}>
               🚨 Emergency Guidelines
             </Typography>
@@ -556,7 +563,14 @@ export default function RecipientDashboard() {
         </Box>
 
         {/* Blood Type Compatibility Chart */}
-        <Paper sx={{ p: 3, borderRadius: 3, border: '1px solid #f1f5f9', mb: 4 }}>
+        <Paper sx={{ 
+          p: 3, 
+          borderRadius: 3, 
+          bgcolor: '#f0f9ff',
+          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.1)',
+          border: '2px solid #bfdbfe',
+          mb: 4
+        }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3, color: '#1e293b' }}>
             🩸 Blood Type Compatibility Reference
           </Typography>

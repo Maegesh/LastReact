@@ -1,29 +1,34 @@
 import { useState, useEffect } from 'react';
 import {
   Box, Typography, Card, CardContent, LinearProgress, Chip,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import {
   TrendingUp, TrendingDown, People, Bloodtype, Business, 
-  CalendarToday, Notifications, CheckCircle, Warning, Error
+  CalendarToday, Notifications, CheckCircle, Warning, 
 } from '@mui/icons-material';
-import { bloodRequestAPI } from '../../api/bloodRequest.api';
-import { appointmentAPI } from '../../api/appointment.api';
-import { donationAPI } from '../../api/donation.api';
-import { notificationAPI } from '../../api/notification.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchDashboardOverview } from '../../store/dashboardSlice';
+
+let dashboardOverviewLoading = false;
 
 interface DashboardProps {
   bloodBanksCount: number;
   bloodRequestsCount: number;
   usersCount: number;
   donorsCount: number;
+  recipientsCount: number;
+  donationsCount: number;
+  appointmentsCount: number;
+  bloodStockCount: number;
+  notificationsCount: number;
 }
 
 export default function Dashboard({ 
   bloodBanksCount, 
   bloodRequestsCount, 
   usersCount, 
-  donorsCount 
+  donorsCount,
 }: DashboardProps) {
   const [recentRequests, setRecentRequests] = useState([]);
   const [recentAppointments, setRecentAppointments] = useState([]);
@@ -35,41 +40,43 @@ export default function Dashboard({
     unreadNotifications: 0
   });
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { overview, overviewLoading, lastFetched } = useAppSelector(state => state.dashboard);
 
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (overview) {
+      setRecentRequests(overview.recentRequests || []);
+      setRecentAppointments(overview.recentAppointments || []);
+      setSystemStats(overview.systemStats || {
+        totalDonations: 0,
+        pendingRequests: 0,
+        completedRequests: 0,
+        upcomingAppointments: 0,
+        unreadNotifications: 0
+      });
+    }
+    setLoading(overviewLoading);
+  }, [overview, overviewLoading]);
 
   const loadDashboardData = async () => {
-    try {
-      setLoading(true);
-      
-      const [requestsRes, appointmentsRes, donationsRes, notificationsRes] = await Promise.all([
-        bloodRequestAPI.getAll().catch(() => ({ data: [] })),
-        appointmentAPI.getAll().catch(() => ({ data: [] })),
-        donationAPI.getAll().catch(() => ({ data: [] })),
-        notificationAPI.getAll().catch(() => ({ data: [] }))
-      ]);
-
-      const requests = requestsRes.data || [];
-      const appointments = appointmentsRes.data || [];
-      const donations = donationsRes.data || [];
-      const notifications = notificationsRes.data || [];
-
-      setRecentRequests(requests.slice(0, 5));
-      setRecentAppointments(appointments.slice(0, 5));
-      
-      setSystemStats({
-        totalDonations: donations.length,
-        pendingRequests: requests.filter((r: any) => r.status === 'Pending').length,
-        completedRequests: requests.filter((r: any) => r.status === 'Completed' || r.status === 'Fulfilled').length,
-        upcomingAppointments: appointments.filter((a: any) => new Date(a.appointmentDate) > new Date()).length,
-        unreadNotifications: notifications.filter((n: any) => !n.isRead).length
-      });
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    } finally {
-      setLoading(false);
+    if (dashboardOverviewLoading || overviewLoading || overview) return;
+    
+    const fiveMinutes = 5 * 60 * 1000;
+    const shouldRefetch = !overview || !lastFetched || (Date.now() - lastFetched > fiveMinutes);
+    
+    if (shouldRefetch) {
+      dashboardOverviewLoading = true;
+      try {
+        await dispatch(fetchDashboardOverview()).unwrap();
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        dashboardOverviewLoading = false;
+      }
     }
   };
 
@@ -78,8 +85,8 @@ export default function Dashboard({
       title: 'Total Users',
       value: usersCount,
       icon: <People />,
-      color: '#3b82f6',
-      bgColor: '#eff6ff',
+      color: '#2563eb',
+      bgColor: '#dbeafe',
       change: '+12%',
       trend: 'up'
     },
@@ -87,8 +94,8 @@ export default function Dashboard({
       title: 'Blood Banks',
       value: bloodBanksCount,
       icon: <Business />,
-      color: '#10b981',
-      bgColor: '#f0fdf4',
+      color: '#059669',
+      bgColor: '#d1fae5',
       change: '+5%',
       trend: 'up'
     },
@@ -96,8 +103,8 @@ export default function Dashboard({
       title: 'Active Donors',
       value: donorsCount,
       icon: <Bloodtype />,
-      color: '#f59e0b',
-      bgColor: '#fffbeb',
+      color: '#dc2626',
+      bgColor: '#fee2e2',
       change: '+18%',
       trend: 'up'
     },
@@ -105,8 +112,8 @@ export default function Dashboard({
       title: 'Blood Requests',
       value: bloodRequestsCount,
       icon: <CalendarToday />,
-      color: '#ef4444',
-      bgColor: '#fef2f2',
+      color: '#7c2d12',
+      bgColor: '#fed7aa',
       change: '+8%',
       trend: 'up'
     }
@@ -171,21 +178,27 @@ export default function Dashboard({
             flex: 1, 
             minWidth: 250,
             borderRadius: 3,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            border: '1px solid #f1f5f9'
+            bgcolor: stat.bgColor,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            border: `2px solid ${stat.color}20`,
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+            }
           }}>
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                 <Box sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 2,
-                  bgcolor: stat.bgColor,
+                  width: 56,
+                  height: 56,
+                  borderRadius: 3,
+                  bgcolor: stat.color,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  boxShadow: `0 4px 12px ${stat.color}40`
                 }}>
-                  <Box sx={{ color: stat.color }}>
+                  <Box sx={{ color: 'white', fontSize: 28 }}>
                     {stat.icon}
                   </Box>
                 </Box>
@@ -215,7 +228,13 @@ export default function Dashboard({
       </Box>
 
       {/* Quick Stats Row */}
-      <Card sx={{ mb: 4, borderRadius: 3, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      <Card sx={{ 
+        mb: 4, 
+        borderRadius: 3, 
+        bgcolor: '#f8fafc',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        border: '1px solid #e2e8f0'
+      }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
             Quick Statistics
@@ -224,15 +243,16 @@ export default function Dashboard({
             {quickStats.map((stat, index) => (
               <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{
-                  width: 40,
-                  height: 40,
+                  width: 48,
+                  height: 48,
                   borderRadius: '50%',
-                  bgcolor: `${stat.color}15`,
+                  bgcolor: stat.color,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  boxShadow: `0 3px 10px ${stat.color}40`
                 }}>
-                  <Box sx={{ color: stat.color, fontSize: 20 }}>
+                  <Box sx={{ color: 'white', fontSize: 22 }}>
                     {stat.icon}
                   </Box>
                 </Box>
@@ -257,7 +277,9 @@ export default function Dashboard({
           flex: 1, 
           minWidth: 400,
           borderRadius: 3,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          bgcolor: '#fef2f2',
+          boxShadow: '0 4px 12px rgba(220, 38, 38, 0.1)',
+          border: '2px solid #fecaca'
         }}>
           <CardContent sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
@@ -317,7 +339,9 @@ export default function Dashboard({
           flex: 1, 
           minWidth: 400,
           borderRadius: 3,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          bgcolor: '#eff6ff',
+          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.1)',
+          border: '2px solid #bfdbfe'
         }}>
           <CardContent sx={{ p: 3 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
@@ -371,7 +395,9 @@ export default function Dashboard({
       <Card sx={{ 
         mt: 4,
         borderRadius: 3,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        bgcolor: '#f0fdf4',
+        boxShadow: '0 4px 12px rgba(5, 150, 105, 0.1)',
+        border: '2px solid #bbf7d0'
       }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>
@@ -387,10 +413,10 @@ export default function Dashboard({
                 variant="determinate" 
                 value={85} 
                 sx={{ 
-                  height: 8, 
-                  borderRadius: 4,
-                  bgcolor: '#f1f5f9',
-                  '& .MuiLinearProgress-bar': { bgcolor: '#10b981' }
+                  height: 10, 
+                  borderRadius: 5,
+                  bgcolor: '#dcfce7',
+                  '& .MuiLinearProgress-bar': { bgcolor: '#059669', borderRadius: 5 }
                 }}
               />
             </Box>
@@ -403,10 +429,10 @@ export default function Dashboard({
                 variant="determinate" 
                 value={72} 
                 sx={{ 
-                  height: 8, 
-                  borderRadius: 4,
-                  bgcolor: '#f1f5f9',
-                  '& .MuiLinearProgress-bar': { bgcolor: '#f59e0b' }
+                  height: 10, 
+                  borderRadius: 5,
+                  bgcolor: '#fef3c7',
+                  '& .MuiLinearProgress-bar': { bgcolor: '#d97706', borderRadius: 5 }
                 }}
               />
             </Box>
@@ -419,10 +445,10 @@ export default function Dashboard({
                 variant="determinate" 
                 value={91} 
                 sx={{ 
-                  height: 8, 
-                  borderRadius: 4,
-                  bgcolor: '#f1f5f9',
-                  '& .MuiLinearProgress-bar': { bgcolor: '#3b82f6' }
+                  height: 10, 
+                  borderRadius: 5,
+                  bgcolor: '#dbeafe',
+                  '& .MuiLinearProgress-bar': { bgcolor: '#2563eb', borderRadius: 5 }
                 }}
               />
             </Box>

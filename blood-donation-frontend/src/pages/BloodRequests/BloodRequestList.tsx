@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import { 
   Box, Typography, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Paper, Chip, IconButton, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Button, TextField, MenuItem, Alert
+  DialogContent, DialogActions, Button, TextField, MenuItem
 } from '@mui/material';
-import { CheckCircle, Cancel, Schedule, CheckCircleOutline, Refresh } from '@mui/icons-material';
+import { CheckCircle, Cancel, CheckCircleOutline } from '@mui/icons-material';
 import { bloodRequestAPI } from '../../api/bloodRequest.api';
 import { appointmentAPI } from '../../api/appointment.api';
-import { bloodBankAPI } from '../../api/bloodBank.api';
 import { donorAPI } from '../../api/donor.api';
+import { useCache } from '../../hooks/useCache';
+import { fetchBloodRequests, setFromOverview } from '../../store/bloodRequestSlice';
+import { fetchBloodBanks } from '../../store/bloodBankSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { BloodRequest } from '../../types/BloodRequest';
-import type { BloodBank } from '../../types/BloodBank';
 import type { DonorProfile } from '../../types/DonorProfile';
 import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
@@ -44,12 +46,15 @@ export default function BloodRequestList({
   filterByBloodGroup, 
   filterByStatus 
 }: BloodRequestListProps) {
+  const dispatch = useAppDispatch();
+  const { overview } = useAppSelector(state => state.donations);
+  const { data: allBloodRequests, loading, loadData } = useCache('bloodRequests', fetchBloodRequests);
+  const { data: bloodBanks, loadData: loadBloodBanks } = useCache('bloodBanks', fetchBloodBanks);
   const [bloodRequests, setBloodRequests] = useState<BloodRequest[]>([]);
-  const [loading, setLoading] = useState(true);
   const [appointmentDialog, setAppointmentDialog] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<BloodRequest | null>(null);
-  const [bloodBanks, setBloodBanks] = useState<BloodBank[]>([]);
-  const [donors, setDonors] = useState<DonorProfile[]>([]);
+
+
   const [appointmentForm, setAppointmentForm] = useState({
     donorId: '',
     bloodBankId: '',
@@ -63,45 +68,45 @@ export default function BloodRequestList({
   }, [filterByBloodGroup, filterByStatus]);
 
   const loadBloodRequests = async () => {
-    try {
-      setLoading(true);
-      let response;
-      
-      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const userRole = currentUser.role;
-      
-      if (filterByBloodGroup) {
-        response = await bloodRequestAPI.getByBloodGroup(filterByBloodGroup);
-      } else if (userRole === 0) {
-        response = await bloodRequestAPI.getAll();
-      } else {
-        setBloodRequests([]);
-        return;
-      }
-      
-      let requests = response.data || [];
-      
-      if (filterByStatus) {
-        requests = requests.filter((req: BloodRequest) => 
-          req.status.toLowerCase() === filterByStatus.toLowerCase()
-        );
-      }
-      
-      if (userRole === 1) {
-        const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
-        requests = requests.filter((req: BloodRequest) => 
-          !donorResponses[`${currentUser.id}_${req.id}`]
-        );
-      }
-      
-      setBloodRequests(requests);
-    } catch (error) {
-      console.error('Error loading blood requests:', error);
-      setBloodRequests([]);
-    } finally {
-      setLoading(false);
-    }
+    await loadData();
   };
+
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userRole = currentUser.role;
+    
+    let requests = [];
+    
+    if (userRole === 1 && overview?.bloodRequests) {
+      // For donors, use blood requests from overview
+      requests = overview.bloodRequests;
+      dispatch(setFromOverview(requests));
+    } else if (allBloodRequests) {
+      // For admins, use fetched blood requests
+      requests = allBloodRequests;
+    }
+    
+    if (filterByBloodGroup) {
+      requests = requests.filter((req: BloodRequest) => 
+        req.bloodGroupNeeded === filterByBloodGroup
+      );
+    }
+    
+    if (filterByStatus) {
+      requests = requests.filter((req: BloodRequest) => 
+        req.status.toLowerCase() === filterByStatus.toLowerCase()
+      );
+    }
+    
+    if (userRole === 1) {
+      const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
+      requests = requests.filter((req: BloodRequest) => 
+        !donorResponses[`${currentUser.id}_${req.id}`]
+      );
+    }
+    
+    setBloodRequests(requests);
+  }, [allBloodRequests, overview?.bloodRequests, filterByBloodGroup, filterByStatus, dispatch]);
 
   const handleAction = async (id: number, action: 'accept' | 'decline') => {
     try {
@@ -117,13 +122,11 @@ export default function BloodRequestList({
           const donorId = donorProfileResponse.data.id;
           
           if (action === 'accept') {
-            // If accepting, showing appointment creation dialog
             const request = bloodRequests.find(req => req.id === id);
             if (request) {
               setSelectedRequest(request);
-              // Load blood banks for appointment
-              const bloodBanksRes = await bloodBankAPI.getAll();
-              setBloodBanks(bloodBanksRes.data || []);
+
+              await loadBloodBanks();
               setAppointmentDialog(true);
               return;
             }
@@ -131,7 +134,7 @@ export default function BloodRequestList({
             // If declining, just update status
             await bloodRequestAPI.donorResponse(id, action, donorId);
             
-            // Store donor response in localStorage to prevent showing again
+            // Storing donor response in localStorage to prevent showing again
             const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
             donorResponses[`${currentUser.id}_${id}`] = action;
             localStorage.setItem('donorResponses', JSON.stringify(donorResponses));
@@ -145,8 +148,6 @@ export default function BloodRequestList({
           return;
         }
       }
-      
-      // For admins, just view the requests 
     } catch (error) {
       console.error(`Error ${action}ing request:`, error);
       toast.error(`Failed to ${action} request`);
@@ -157,12 +158,33 @@ export default function BloodRequestList({
   
   const handleMarkAsFulfilled = async (requestId: number) => {
     try {
-      await bloodRequestAPI.update(requestId, { status: 'Fulfilled' });
+      await bloodRequestAPI.updateStatus(requestId, 'Fulfilled');
       toast.success('Blood request marked as fulfilled!');
-      loadBloodRequests(); // Refresh the list
+      // Update local state immediately
+      setBloodRequests(prev => prev.map(req => 
+        req.id === requestId ? { ...req, status: 'Fulfilled' } : req
+      ));
+      // Also reload data
+      await loadBloodRequests();
     } catch (error) {
       console.error('Error marking request as fulfilled:', error);
       toast.error('Failed to mark request as fulfilled');
+    }
+  };
+
+  const handleMarkAsCompleted = async (requestId: number) => {
+    try {
+      await bloodRequestAPI.updateStatus(requestId, 'Completed');
+      toast.success('Blood request marked as completed!');
+      // Update local state immediately
+      setBloodRequests(prev => prev.map(req => 
+        req.id === requestId ? { ...req, status: 'Completed' } : req
+      ));
+      // Also reload data
+      await loadBloodRequests();
+    } catch (error) {
+      console.error('Error marking request as completed:', error);
+      toast.error('Failed to mark request as completed');
     }
   };
   
@@ -191,7 +213,7 @@ export default function BloodRequestList({
       // Update blood request status to accepted
       await bloodRequestAPI.donorResponse(selectedRequest?.id || 0, 'accept', donorId);
       
-      // Store donor response in localStorage to prevent showing again
+      // Storing donor response in localStorage to prevent showing again
       const donorResponses = JSON.parse(localStorage.getItem('donorResponses') || '{}');
       donorResponses[`${currentUser.id}_${selectedRequest?.id}`] = 'accept';
       localStorage.setItem('donorResponses', JSON.stringify(donorResponses));
@@ -251,8 +273,8 @@ export default function BloodRequestList({
               bloodRequests.map((request) => (
                 <TableRow key={request.id} hover>
                   <TableCell>{request.id}</TableCell>
-                  <TableCell>{request.recipientName || `Recipient ${request.recipientId}`}</TableCell>
-                  <TableCell>{request.hospitalName || 'Not specified'}</TableCell>
+                  <TableCell>{request.recipientName || request.recipient?.user?.firstName ? (request.recipientName || `${request.recipient?.user?.firstName} ${request.recipient?.user?.lastName}`) : `Recipient ${request.recipientId}`}</TableCell>
+                  <TableCell>{request.hospitalName || request.recipient?.hospitalName || 'Not specified'}</TableCell>
                   <TableCell>
                     <Chip 
                       label={request.bloodGroupNeeded} 
@@ -298,6 +320,19 @@ export default function BloodRequestList({
                                   <Cancel />
                                 </IconButton>
                               </>
+                            );
+                          }
+                        } else if (userRole === 2) { // Recipient
+                          if (request.status === 'Accepted') {
+                            return (
+                              <IconButton 
+                                color="primary" 
+                                size="small"
+                                onClick={() => handleMarkAsCompleted(request.id)}
+                                title="Mark as Completed"
+                              >
+                                <CheckCircleOutline />
+                              </IconButton>
                             );
                           }
                         } else if (userRole === 0) { // Admin
@@ -349,7 +384,7 @@ export default function BloodRequestList({
               onChange={(e) => setAppointmentForm(prev => ({ ...prev, bloodBankId: e.target.value }))}
               required
             >
-              {bloodBanks.map((bank) => (
+              {(bloodBanks || []).map((bank: any) => (
                 <MenuItem key={bank.id} value={bank.id}>
                   {bank.name} - {bank.location}
                 </MenuItem>

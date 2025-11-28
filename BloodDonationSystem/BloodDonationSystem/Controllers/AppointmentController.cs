@@ -154,5 +154,49 @@ namespace BloodDonationSystem.Controllers
                 return StatusCode(500, new { message = "Internal server error", details = ex.Message });
             }
         }
+
+        [HttpPost("get-by-donor")]
+        [Authorize(Roles = "0,1")] 
+        public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAppointmentsByDonorPayload([FromBody] DonorIdPayload payload)
+        {
+            try
+            {
+                if (payload.DonorId <= 0)
+                    return BadRequest(new { message = "Invalid donor ID" });
+
+                var appointments = await _appointmentService.GetAppointmentsByDonor(payload.DonorId);
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
+
+        [HttpPost("update-status")]
+        [Authorize(Roles = "0")] 
+        public async Task<ActionResult<AppointmentResponseDto>> UpdateAppointmentStatus([FromBody] AppointmentStatusUpdatePayload payload)
+        {
+            try
+            {
+                if (payload.Id <= 0)
+                    return BadRequest(new { message = "Invalid appointment ID" });
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var updateDto = new AppointmentUpdateDto { Status = payload.Status };
+                var updated = await _appointmentService.UpdateAppointment(payload.Id, updateDto);
+                return Ok(updated);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
+        }
     }
 }

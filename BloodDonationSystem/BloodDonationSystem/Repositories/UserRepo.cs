@@ -61,9 +61,45 @@ namespace BloodDonationSystem.Repositories
 
         public async Task<User> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users
+                .Include(u => u.DonorProfile)
+                    .ThenInclude(d => d.DonationRecords)
+                .Include(u => u.DonorProfile)
+                    .ThenInclude(d => d.Appointments)
+                .Include(u => u.DonorProfile)
+                    .ThenInclude(d => d.DonorRequestLinks)
+                .Include(u => u.RecipientProfile)
+                    .ThenInclude(r => r.BloodRequests)
+                        .ThenInclude(br => br.DonorRequestLinks)
+                .Include(u => u.Notifications)
+                .FirstOrDefaultAsync(u => u.Id == id);
+                
             if (user == null)
                 throw new KeyNotFoundException($"User with Id {id} not found");
+
+            // Remove donor-related records
+            if (user.DonorProfile != null)
+            {
+                if (user.DonorProfile.DonationRecords?.Any() == true)
+                    _context.DonationRecords.RemoveRange(user.DonorProfile.DonationRecords);
+                    
+                if (user.DonorProfile.Appointments?.Any() == true)
+                    _context.Appointments.RemoveRange(user.DonorProfile.Appointments);
+                    
+                if (user.DonorProfile.DonorRequestLinks?.Any() == true)
+                    _context.DonorRequestLinks.RemoveRange(user.DonorProfile.DonorRequestLinks);
+            }
+            
+            // Remove recipient-related records
+            if (user.RecipientProfile?.BloodRequests?.Any() == true)
+            {
+                foreach (var bloodRequest in user.RecipientProfile.BloodRequests)
+                {
+                    if (bloodRequest.DonorRequestLinks?.Any() == true)
+                        _context.DonorRequestLinks.RemoveRange(bloodRequest.DonorRequestLinks);
+                }
+                _context.BloodRequests.RemoveRange(user.RecipientProfile.BloodRequests);
+            }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();

@@ -5,12 +5,14 @@ import {
 } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { recipientAPI } from '../../api/recipient.api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchRecipientOverview } from '../../store/recipientSlice';
 import type { RecipientProfile as RecipientProfileType } from '../../types/RecipientProfile';
 import Loader from '../../components/Loader';
 
 export default function RecipientProfile() {
-  const [profile, setProfile] = useState<RecipientProfileType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { overview, loading } = useAppSelector(state => state.recipients);
   const [editDialog, setEditDialog] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -25,32 +27,30 @@ export default function RecipientProfile() {
 
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  const profile = overview?.profile;
 
   useEffect(() => {
-    loadProfile();
-  }, []);
+    if (!overview && currentUser.id) {
+      dispatch(fetchRecipientOverview(currentUser.id));
+    }
+  }, [dispatch, overview, currentUser.id]);
+
+  useEffect(() => {
+    if (profile) {
+      setEditForm({
+        hospitalName: profile.hospitalName || '',
+        patientName: profile.patientName || '',
+        requiredBloodGroup: profile.requiredBloodGroup || '',
+        contactNumber: profile.contactNumber || '',
+        emergencyContact: profile.emergencyContact || '',
+        medicalHistory: profile.medicalHistory || ''
+      });
+    }
+  }, [profile]);
 
   const loadProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await recipientAPI.getByUserId(currentUser.id);
-      const profileData = response.data;
-      setProfile(profileData);
-      
-      if (profileData) {
-        setEditForm({
-          hospitalName: profileData.hospitalName || '',
-          patientName: profileData.patientName || '',
-          requiredBloodGroup: profileData.requiredBloodGroup || '',
-          contactNumber: profileData.contactNumber || '',
-          emergencyContact: profileData.emergencyContact || '',
-          medicalHistory: profileData.medicalHistory || ''
-        });
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    } finally {
-      setLoading(false);
+    if (currentUser.id) {
+      dispatch(fetchRecipientOverview(currentUser.id));
     }
   };
 

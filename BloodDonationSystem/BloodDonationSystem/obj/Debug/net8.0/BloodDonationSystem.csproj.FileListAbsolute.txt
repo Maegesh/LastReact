@@ -523,10 +523,10 @@ C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\D
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\BloodDon.F0A11892.Up2Date
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\BloodDonationSystem.dll
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\refint\BloodDonationSystem.dll
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\BloodDonationSystem.pdb
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\BloodDonationSystem.genruntimeconfig.cache
 C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\ref\BloodDonationSystem.dll
+C:\Users\lithe\NewReactMainProject\BloodDonationSystem\BloodDonationSystem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -4,8 +4,8 @@ import {
   TableHead, TableRow, Paper, Chip, IconButton
 } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
-import { bloodStockAPI } from '../../api/bloodStock.api';
-import type { BloodStock } from '../../types/BloodStock';
+import { useCache } from '../../hooks/useCache';
+import { fetchBloodStock } from '../../store/bloodStockSlice';
 import Loader from '../../components/Loader';
 
 const getBloodGroupColor = (bloodGroup: string) => {
@@ -17,25 +17,11 @@ const getBloodGroupColor = (bloodGroup: string) => {
 };
 
 export default function BloodStockList() {
-  const [bloodStock, setBloodStock] = useState<BloodStock[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: bloodStock, loading, loadData } = useCache('bloodStock', fetchBloodStock);
 
   useEffect(() => {
-    loadBloodStock();
+    loadData();
   }, []);
-
-  const loadBloodStock = async () => {
-    try {
-      setLoading(true);
-      const response = await bloodStockAPI.getAll();
-      setBloodStock(response.data || []);
-    } catch (error) {
-      console.error('Error loading blood stock:', error);
-      setBloodStock([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) return <Loader message="Loading blood stock..." />;
 
@@ -45,7 +31,7 @@ export default function BloodStockList() {
         <Typography variant="h5" sx={{ color: '#d32f2f', fontWeight: 'bold' }}>
           Blood Stock Management
         </Typography>
-        <IconButton onClick={loadBloodStock} color="primary">
+        <IconButton onClick={() => loadData()} color="primary">
           <Refresh />
         </IconButton>
       </Box>
@@ -62,14 +48,14 @@ export default function BloodStockList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bloodStock.length === 0 ? (
+            {(!bloodStock || bloodStock.length === 0) ? (
               <TableRow>
                 <TableCell colSpan={5} sx={{ textAlign: 'center', py: 3 }}>
                   No blood stock data found
                 </TableCell>
               </TableRow>
             ) : (
-              bloodStock.map((stock) => (
+              (bloodStock || []).map((stock: any) => (
                 <TableRow key={stock.id} hover>
                   <TableCell>{stock.id}</TableCell>
                   <TableCell>{stock.bloodBankName || `Blood Bank ${stock.bloodBankId}`}</TableCell>

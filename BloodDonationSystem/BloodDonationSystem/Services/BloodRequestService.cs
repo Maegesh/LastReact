@@ -58,7 +58,7 @@ namespace BloodDonationSystem.Services
                 var recipientProfile = await _context.RecipientProfiles
                     .Include(r => r.User)
                     .FirstOrDefaultAsync(r => r.UserId == requestDto.RecipientId);
-                
+
                 if (recipientProfile == null)
                 {
                     throw new InvalidOperationException("Recipient profile not found. Please create your profile first.");
@@ -72,10 +72,10 @@ namespace BloodDonationSystem.Services
                 };
 
                 var created = await _bloodRequestRepo.CreateBloodRequest(bloodRequest);
-                
+
                 // Auto-notify matching donors and admin
                 await NotifyMatchingDonors(created);
-                
+
                 return MapToResponseDto(created);
             }
             catch (Exception ex)
@@ -138,87 +138,28 @@ namespace BloodDonationSystem.Services
             };
 
             var updated = await _bloodRequestRepo.UpdateBloodRequest(id, bloodRequest);
-            
+
             // Notify recipient about status change
             await NotifyRecipientStatusChange(updated, requestDto.Status);
-            
-            // Don't automatically create donation records when recipient marks as fulfilled
-            // Donation records should only be created through admin fulfill action or appointment system
+
             
             return MapToResponseDto(updated);
         }
-        
-        private async Task CreateDonationRecordsForFulfilledRequest(BloodRequest request)
-        {
-            try
-            {
-                Console.WriteLine($"Creating donation records for fulfilled request {request.Id}");
-                
-                // Find all donors linked to this request (since DonorRequestLink doesn't have Status)
-                var linkedDonors = await _context.DonorRequestLinks
-                    .Include(drl => drl.Donor)
-                    .ThenInclude(d => d.User)
-                    .Where(drl => drl.RequestId == request.Id)
-                    .ToListAsync();
-                
-                Console.WriteLine($"Found {linkedDonors.Count} linked donors for request {request.Id}");
-                
-                // Get a default blood bank (first available)
-                var bloodBank = await _context.BloodBanks.FirstOrDefaultAsync();
-                if (bloodBank == null)
-                {
-                    Console.WriteLine("No blood bank found for donation records");
-                    return;
-                }
-                
-                // Create donation record for each linked donor (up to the requested quantity)
-                int donationsCreated = 0;
-                foreach (var donorLink in linkedDonors)
-                {
-                    if (donationsCreated >= request.Quantity)
-                        break; // Don't create more donations than requested
-                        
-                    var donationRecord = new DonationRecord
-                    {
-                        DonorId = donorLink.DonorId,
-                        BloodBankId = bloodBank.Id,
-                        DonationDate = DateTime.Now,
-                        Quantity = 1, // Standard donation unit
-                        Status = "Completed"
-                    };
-                    
-                    _context.DonationRecords.Add(donationRecord);
-                    donationsCreated++;
-                    Console.WriteLine($"Created donation record for donor {donorLink.DonorId}");
-                    
-                    // Update blood stock
-                    await UpdateBloodStock(bloodBank.Id, donorLink.Donor.BloodGroup, 1);
-                }
-                
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Created {donationsCreated} donation records and updated blood stock for fulfilled request {request.Id}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating donation records: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                // Don't throw - donation record failure shouldn't break the fulfillment
-            }
-        }
-        
+
+
         private async Task NotifyRecipientStatusChange(BloodRequest request, string newStatus)
         {
             try
             {
                 Console.WriteLine($"NotifyRecipientStatusChange called for request {request.Id}, status: {newStatus}");
-                
+
                 // Get the recipient's user ID
                 var recipient = await _context.RecipientProfiles
                     .Include(r => r.User)
                     .FirstOrDefaultAsync(r => r.Id == request.RecipientId);
-                
+
                 Console.WriteLine($"Found recipient: {recipient?.User?.Username} (UserId: {recipient?.UserId})");
-                
+
                 if (recipient?.User != null)
                 {
                     string message = newStatus.ToLower() switch
@@ -228,23 +169,23 @@ namespace BloodDonationSystem.Services
                         "fulfilled" => $"Great! Your blood request for {request.BloodGroupNeeded} ({request.Quantity} units) has been fulfilled.",
                         _ => $"Your blood request for {request.BloodGroupNeeded} ({request.Quantity} units) status has been updated to {newStatus}."
                     };
-                    
+
                     Console.WriteLine($"Creating notification for UserId {recipient.UserId}: {message}");
-                    
+
                     var notification = new NotificationLog
                     {
                         UserId = recipient.UserId,
                         Message = message
                     };
-                    
+
                     _context.NotificationLogs.Add(notification);
-                    
+
                     // When recipient marks as fulfilled, notify donors and admin
                     if (newStatus.ToLower() == "fulfilled")
                     {
                         await NotifyDonorsAndAdminOfFulfillment(request);
                     }
-                    
+
                     await _context.SaveChangesAsync();
                     Console.WriteLine("Recipient notification saved successfully");
                 }
@@ -260,39 +201,13 @@ namespace BloodDonationSystem.Services
                 // Don't throw - notification failure shouldn't break the update
             }
         }
-        
+
         private async Task NotifyDonorsAndAdminOfFulfillment(BloodRequest request)
         {
             try
             {
-                // Find all donors linked to this request
-                var linkedDonors = await _context.DonorRequestLinks
-                    .Include(drl => drl.Donor)
-                    .ThenInclude(d => d.User)
-                    .Where(drl => drl.RequestId == request.Id)
-                    .ToListAsync();
-                
-                // Only notify donors who accepted the request
-                foreach (var donorLink in linkedDonors)
-                {
-                    // Check if donor accepted the request
-                    var acceptedResponse = await _context.NotificationLogs
-                        .Where(n => n.UserId == donorLink.Donor.UserId && 
-                               n.Message.StartsWith($"RESPONSE:{donorLink.Id}:Accepted:"))
-                        .FirstOrDefaultAsync();
-                    
-                    if (acceptedResponse != null)
-                    {
-                        var donorNotification = new NotificationLog
-                        {
-                            UserId = donorLink.Donor.UserId,
-                            Message = $"Blood request fulfilled! Your donation for {request.BloodGroupNeeded} ({request.Quantity} units) has been successfully received by the recipient."
-                        };
-                        _context.NotificationLogs.Add(donorNotification);
-                    }
-                }
-                
-                // Notify all admins
+                // Only notify admins when recipient marks as fulfilled
+                // Don't notify all donors - only the specific donor who fulfilled it gets notified in FulfillBloodRequest method
                 var admins = await _context.Users.Where(u => u.Role == UserRole.Admin).ToListAsync();
                 foreach (var admin in admins)
                 {
@@ -303,15 +218,15 @@ namespace BloodDonationSystem.Services
                     };
                     _context.NotificationLogs.Add(adminNotification);
                 }
-                
-                Console.WriteLine($"Created fulfillment notifications for {linkedDonors.Count} donors and {admins.Count} admins");
+
+                Console.WriteLine($"Created fulfillment notifications for {admins.Count} admins");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error notifying donors and admin of fulfillment: {ex.Message}");
+                Console.WriteLine($"Error notifying admin of fulfillment: {ex.Message}");
             }
         }
-        
+
         private async Task UpdateBloodStock(int bloodBankId, string bloodGroup, int quantity)
         {
             try
@@ -319,7 +234,7 @@ namespace BloodDonationSystem.Services
                 // Find existing blood stock record
                 var bloodStock = await _context.BloodStocks
                     .FirstOrDefaultAsync(bs => bs.BloodBankId == bloodBankId && bs.BloodGroup == bloodGroup);
-                
+
                 if (bloodStock != null)
                 {
                     // Update existing stock
@@ -340,7 +255,7 @@ namespace BloodDonationSystem.Services
                     _context.BloodStocks.Add(bloodStock);
                     Console.WriteLine($"Created new blood stock: {bloodGroup} at BloodBank {bloodBankId}, quantity: {quantity}");
                 }
-                
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -360,22 +275,22 @@ namespace BloodDonationSystem.Services
             var request = await _context.BloodRequests
                 .Include(br => br.Recipient).ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(br => br.Id == requestId);
-            
+
             if (request == null)
                 throw new KeyNotFoundException($"Blood Request with Id {requestId} not found");
-            
+
             var donor = await _context.DonorProfiles
                 .Include(d => d.User)
                 .FirstOrDefaultAsync(d => d.Id == donorId);
-            
+
             if (donor == null)
                 throw new KeyNotFoundException($"Donor with Id {donorId} not found");
-            
+
             // Update request status based on donor response
             if (response.ToLower() == "accept")
             {
                 request.Status = "Approved";
-                
+
                 // Notify admin about donor acceptance
                 var admins = await _context.Users.Where(u => u.Role == UserRole.Admin).ToListAsync();
                 foreach (var admin in admins)
@@ -387,7 +302,7 @@ namespace BloodDonationSystem.Services
                     };
                     _context.NotificationLogs.Add(adminNotification);
                 }
-                
+
                 // Notify recipient about acceptance
                 var recipientNotification = new NotificationLog
                 {
@@ -406,7 +321,7 @@ namespace BloodDonationSystem.Services
                 };
                 _context.NotificationLogs.Add(adminNotification);
             }
-            
+
             await _context.SaveChangesAsync();
             return MapToResponseDto(request);
         }
@@ -416,25 +331,25 @@ namespace BloodDonationSystem.Services
             var request = await _context.BloodRequests
                 .Include(br => br.Recipient).ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(br => br.Id == requestId);
-            
+
             if (request == null)
                 throw new KeyNotFoundException($"Blood Request with Id {requestId} not found");
-            
+
             var donor = await _context.DonorProfiles
                 .Include(d => d.User)
                 .FirstOrDefaultAsync(d => d.Id == donorId);
-            
+
             if (donor == null)
                 throw new KeyNotFoundException($"Donor with Id {donorId} not found");
-            
+
             // Update blood request status
             request.Status = "Fulfilled";
-            
+
             // Get default blood bank
             var bloodBank = await _context.BloodBanks.FirstOrDefaultAsync();
             if (bloodBank == null)
                 throw new InvalidOperationException("No blood bank available");
-            
+
             // Create donation record for ONLY this specific donor
             var donation = new DonationRecord
             {
@@ -445,18 +360,18 @@ namespace BloodDonationSystem.Services
                 Status = "Completed"
             };
             _context.DonationRecords.Add(donation);
-            
+
             // Update donor's last donation date
             donor.LastDonationDate = DateTime.Now;
             _context.DonorProfiles.Update(donor);
-            
+
             // Update eligibility status based on new donation date
             donor.EligibilityStatus = false; // Not eligible for next 90 days
-            
+
             // Update blood stock
             var bloodStock = await _context.BloodStocks
                 .FirstOrDefaultAsync(bs => bs.BloodBankId == bloodBank.Id && bs.BloodGroup == donor.BloodGroup);
-            
+
             if (bloodStock != null)
             {
                 bloodStock.UnitsAvailable += request.Quantity;
@@ -473,7 +388,7 @@ namespace BloodDonationSystem.Services
                 };
                 _context.BloodStocks.Add(newBloodStock);
             }
-            
+
             // Notify donor
             var donorNotification = new NotificationLog
             {
@@ -483,7 +398,7 @@ namespace BloodDonationSystem.Services
                 CreatedAt = DateTime.Now
             };
             _context.NotificationLogs.Add(donorNotification);
-            
+
             // Notify recipient
             var recipientNotification = new NotificationLog
             {
@@ -493,9 +408,9 @@ namespace BloodDonationSystem.Services
                 CreatedAt = DateTime.Now
             };
             _context.NotificationLogs.Add(recipientNotification);
-            
+
             await _context.SaveChangesAsync();
-            
+
             return MapToResponseDto(request);
         }
 

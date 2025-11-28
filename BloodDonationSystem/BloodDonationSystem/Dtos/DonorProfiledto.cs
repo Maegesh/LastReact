@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using BloodDonationSystem.Attributes;
 
 namespace BloodDonationSystem.Dtos
 {
@@ -38,6 +39,7 @@ namespace BloodDonationSystem.Dtos
         public string Gender { get; set; } = null!;
 
         [DataType(DataType.Date)]
+        [DateNotInFuture(ErrorMessage = "Last donation date cannot be in the future")]
         public DateTime? LastDonationDate { get; set; }
     }
 
@@ -66,6 +68,7 @@ namespace BloodDonationSystem.Dtos
         public string? Gender { get; set; }
 
         [DataType(DataType.Date)]
+        [DateNotInFuture(ErrorMessage = "Last donation date cannot be in the future")]
         public DateTime? LastDonationDate { get; set; }
     }
 
